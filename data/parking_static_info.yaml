@@ -1,0 +1,72 @@
+- document_id: parking-location
+  title: Parking Location and Access
+  data_classification: public_static
+  body: |
+    The parking facility is located at Złote Tarasy, ul. Złota 59, 00-120 Warsaw, Poland.
+    The underground parking complex can be accessed through entrances and exits located on:
+    - Al. Jana Pawła II
+    - ul. Emilii Plater
+    - ul. Złota
+
+- document_id: parking-hours
+  title: Operating Hours
+  data_classification: public_static
+  body: |
+    The parking facility operates 24 hours a day, 7 days a week, including Sundays and public holidays.
+
+- document_id: parking-pricing-info
+  title: Pricing Guidelines
+  data_classification: public_static
+  body: |
+    Parking prices are dynamic and may depend on the parking zone, time of day, and current demand.
+    The assistant can provide current prices only when dynamic pricing data is available in the operational database. Static information should not be treated as a current price quote.
+    Historical reference rates start from 6.00 PLN per hour, but current charges may differ.
+    Long-term subscriptions may be available:
+    - 24/7 continuous access: 140.00 EUR net per month.
+    - Daily or business access, Monday to Friday from 07:00 to 19:00: 120.00 EUR net per month.
+    Subscription availability, prices, and terms must be confirmed with the parking administration.
+
+- document_id: parking-booking-rules
+  title: Booking and Parking Rules
+  data_classification: public_static
+  body: |
+    The facility supports short-term parking and monthly subscriptions.
+    To request a short-term parking reservation, users provide their name, surname, car registration number, and requested reservation period to the virtual assistant.
+    A reservation request is not confirmed until it receives administrator approval.
+    Monthly subscription requests may also be initiated through the virtual assistant. Subscription terms and agreement requirements are confirmed by the parking administration.
+
+- document_id: parking-cancellation
+  title: Cancellation and Modification Policy
+  data_classification: public_static
+  body: |
+    Short-term reservation requests may be cancelled before administrator approval.
+    After approval, customers must contact the parking office to request a cancellation or modification.
+    Monthly subscription cancellation or modification requires prior written notice to the administration office and is subject to the signed agreement terms.
+
+- document_id: parking-accessibility
+  title: Accessibility and Amenities
+  data_classification: public_static
+  body: |
+    The parking facility has 1032 parking spaces distributed across three underground levels: -1, -2, and -3.
+    The facility is intended for passenger cars, including vehicles with LPG installations, with a maximum height clearance of 2.0 meters.
+    A free, unguarded parking area for bicycles and scooters is available on Level -1 near the ul. Złota entrance. Basic maintenance tools, including wrenches, pliers, and a pump, are available for use.
+    Elevators connect all parking levels to the shopping center. A ramp on Level -3 provides step-free shopping-cart access to the Carrefour supermarket.
+    A manual car wash and detailing service is available on Level -3 in the Blue Section.
+
+- document_id: parking-contact
+  title: Contact Details
+  data_classification: public_static
+  body: |
+    For assistance, lost-ticket requests, or invoice requests, the Customer Service Parking Office is located on Level -1 near the exit towards ul. Złota in the Green-Yellow section.
+    Parking Office Phone: +48 22 222 00 96
+    Parking Office Email: ztservice@interparking.com
+    General Mall Information Phone: +48 22 222 22 00
+    General Mall Information Email: infopunkt@zlotetarasy.pl
+
+- document_id: knowledge-base-disclaimer
+  title: Information Verification Notice
+  data_classification: public_static
+  body: |
+    This knowledge base contains public reference information that may change over time.
+    Current availability, real-time parking prices, access restrictions, subscription terms, and reservation decisions must be obtained from the operational system or confirmed by the parking administration.
+    The assistant must not treat static reference information as proof of current space availability or reservation confirmation.

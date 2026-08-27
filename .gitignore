@@ -1,0 +1,27 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Virtual environments
+.venv/
+venv/
+.env
+
+.streamlit/secrets.toml
+
+data/*.db
+data/*.sqlite
+
+
+.vscode/
+.idea/
+.DS_Store
+
+src/parking_agent_system/analyze.ipynb
