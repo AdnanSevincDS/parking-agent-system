@@ -78,9 +78,73 @@ from parking_agent_system.services.rag_service import ParkingRAGService
 
     
 
-#     # In terminal: uv run uvicorn main:app --reload
+### In terminal: uv run uvicorn main:app --reload
 # if __name__ == "__main__":
 #     main()
+
+#------------------------------------------------#
+# =====FastAPI Health Check Endpoint Testing=====
+#------------------------------------------------#
+# from fastapi import FastAPI
+
+# from parking_agent_system.api.routes_chat import router
+
+
+# app = FastAPI(
+#     title="Parking Agent System",
+#     version="0.1.0",
+#     description="RAG-based parking information and reservation assistant.",
+# )
+
+# app.include_router(router)
+
+
+# @app.get("/", tags=["system"])
+# def root() -> dict[str, str]:
+#     """Return a minimal backend welcome message."""
+#     return {
+#         "message": "Parking Agent System backend is running.",
+#     }
+
+######## In terminal: uv run uvicorn main:app --reload
+
+
+## health check endpoint testing
+# curl http://127.0.0.1:8000/health
+# {"status":"ok","service":"parking_agent_system","version":"0.1.0"}%
+
+
+# curl -X POST http://127.0.0.1:8000/chat \
+#   -H "Content-Type: application/json" \
+#   -d '{
+#     "conversation_id": "b45470ef-b252-49f0-99ba-29cc745624c0",
+#     "message": "What are the parking operating hours?"
+#   }'
+
+### better in PostMan
+# 1. Method: Select POST from the dropdown next to the URL bar.
+# 2. URL: Enter http://localhost:8000/chat
+# 3. Headers Tab: Add a header with Key: Content-Type and Value: application/json.
+# 4. Body Tab: Select raw and enter the following JSON:
+# {
+#   "conversation_id": "b45470ef-b252-49f0-99ba-29cc745624c0",
+#   "message": "hello"
+# }
+
+
+#######test validation in terminal
+# curl -X POST http://127.0.0.1:8000/chat \
+#   -H "Content-Type: application/json" \
+#   -d '{
+#     "conversation_id": "b45470ef-b252-49f0-99ba-29cc745624c0",
+#     "message": "    "
+#   }'
+
+# >>> {"detail":[{"type":"value_error","loc":["body","message"],"msg":"Value error, Message cannot be empty or whitespace only.","input":"    ","ctx":{"error":{}}}]}%
+
+#------------------------------------------------#
+# =====Browser → Streamlit → FastAPI → RAG → Milvus Lite + Ollama=====
+#------------------------------------------------#
 
 #------------------------------------------------#
 # =====FastAPI Health Check Endpoint Testing=====
@@ -106,20 +170,11 @@ def root() -> dict[str, str]:
         "message": "Parking Agent System backend is running.",
     }
 
-######## In terminal: uv run uvicorn main:app --reload
-# curl -X POST http://127.0.0.1:8000/chat \
-#   -H "Content-Type: application/json" \
-#   -d '{
-#     "conversation_id": "b45470ef-b252-49f0-99ba-29cc745624c0",
-#     "message": "What are the parking operating hours?"
-#   }'
+# Terminal 1: FastAPI backend
+# > uv run uvicorn main:app --reload
+# Terminal 2: Streamlit frontend
+# > uv run streamlit run frontend/app.py
+# > http://localhost:8501
 
-#######test validation in terminal
-# curl -X POST http://127.0.0.1:8000/chat \
-#   -H "Content-Type: application/json" \
-#   -d '{
-#     "conversation_id": "b45470ef-b252-49f0-99ba-29cc745624c0",
-#     "message": "    "
-#   }'
-
-# >>> {"detail":[{"type":"value_error","loc":["body","message"],"msg":"Value error, Message cannot be empty or whitespace only.","input":"    ","ctx":{"error":{}}}]}%
+# will have a complete working local application:
+# Browser → Streamlit → FastAPI → RAG → Milvus Lite + Ollama
