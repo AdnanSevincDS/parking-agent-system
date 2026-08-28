@@ -4,7 +4,9 @@ from parking_agent_system.config import settings
 from langchain_core.documents import Document
 
 SYSTEM_PROMPT = settings.system_prompt_path.read_text(encoding="utf-8").strip()
-
+KNOWLEDGE_BASE_FALLBACK = (
+    "I do not have that information in the available parking knowledge base."
+)
 class ParkingRAGService:
     def __init__(
         self,
@@ -83,11 +85,17 @@ class ParkingRAGService:
         
         if not retrieved_docs:
             return (
-                "I do not have that information in the available parking knowledge base.",
+                KNOWLEDGE_BASE_FALLBACK,
                 []
             )
 
         messages = self._construct_messages(question, context)
         answer = self._chat_agent.generate_response(messages)
+
+        if answer.strip() == KNOWLEDGE_BASE_FALLBACK:
+            return (
+                KNOWLEDGE_BASE_FALLBACK,
+                []
+            )
 
         return answer, retrieved_docs

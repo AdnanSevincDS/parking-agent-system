@@ -36,7 +36,7 @@ def chat(request: ChatRequest) -> ChatResponse:
         answer, documents = rag_service.answer_question(request.message, top_k=3)
     except Exception as error:
         raise HTTPException(
-            satatus_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
             detail="The parking assistant is temporarily unavailable."
         ) from error
     
@@ -62,10 +62,10 @@ def chat(request: ChatRequest) -> ChatResponse:
                 )
         )
 
-        return ChatResponse(
-            conversation_id=request.conversation_id,
-            message=answer,
-            intent=Intent.INFORMATION,
-            conversation_status=ConversationStatus.ANSWERED,
-            sources=sources
-        )
+    return ChatResponse(
+        conversation_id=request.conversation_id,
+        message=answer,
+        intent=Intent.INFORMATION,
+        conversation_status=ConversationStatus.ANSWERED,
+        sources=sources
+    )
