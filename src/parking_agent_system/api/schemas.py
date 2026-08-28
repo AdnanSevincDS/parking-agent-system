@@ -21,7 +21,7 @@ class ReservationField(str, Enum):
     """"Reservation details that may be collected from the user"""
     NAME = "name"
     SURNAME = "surname"
-    PLATE_NUMBER = "plate_number"
+    CAR_NUMBER = "car_number"
     RESERVATION_START = "reservation_start"
     RESERVATION_END = "reservation_end"
 
