@@ -103,7 +103,7 @@ class ParkingVectorStore:
             raise ValueError("No chunks created from documents.")
 
         # Recreate the collection for an explicit local rebuild.
-        vector_store = self._create_vector_store(drop_old=True) #Adnan check? drop_old=True
+        vector_store = self._create_vector_store(drop_old=True)
         vector_store.add_documents(chunks)
 
         return len(chunks)

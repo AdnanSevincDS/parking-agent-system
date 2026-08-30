@@ -1,5 +1,3 @@
-from parking_agent_system.agents.user_agent import ParkingChatAgent
-from parking_agent_system.data_layer.vector_manager import ParkingVectorStore, STATIC_INFO_PATH
 from parking_agent_system.services.rag_service import ParkingRAGService
 
 from fastapi import FastAPI
