@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timedelta
 from uuid import uuid4
 
 import pytest
@@ -16,7 +16,7 @@ def test_create_pending_reservation_validates_and_persists_data(tmp_path) -> Non
     service = ReservationService(database=database)
 
     conversation_id = uuid4()
-    reservation_start = datetime.now(timezone.utc) + timedelta(days=1)
+    reservation_start = datetime.now() + timedelta(days=1)
     reservation_end = reservation_start + timedelta(hours=2)
 
     result = service.create_pending_reservation(
@@ -52,7 +52,7 @@ def test_create_pending_reservation_rejects_invalid_car_number(tmp_path) -> None
 
     service = ReservationService(database=database)
 
-    reservation_start = datetime.now(timezone.utc) + timedelta(days=1)
+    reservation_start = datetime.now() + timedelta(days=1)
     reservation_end = reservation_start + timedelta(hours=2)
 
     with pytest.raises(ValueError, match="Car number"):

@@ -41,11 +41,6 @@ class Settings(BaseSettings):
         validation_alias="OLLAMA_EMBEDDING_MODEL",
     )
 
-    # Parking business configuration
-    parking_timezone: str = Field(
-        default="Europe/Warsaw",
-        validation_alias="PARKING_TIMEZONE",
-    )
     parking_capacity: int = Field(
         default=20,
         gt=0,

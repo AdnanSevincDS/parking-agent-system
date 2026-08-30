@@ -1,7 +1,7 @@
 """Validation helpers for parking reservation details."""
 
 import re
-from datetime import datetime, timezone
+from datetime import datetime
 
 
 NAME_PATTERN = re.compile(r"^[A-Za-z]+(?:[' -][A-Za-z]+)*$")
@@ -40,8 +40,6 @@ def validate_car_number(value: str) -> str:
     if not value.strip():
         raise ValueError("Car number cannot be empty.")
 
-    # Allow spaces in input, for example: "WA 1234 AB".
-    # Punctuation such as "-" and "!" remains invalid.
     cleaned_value = "".join(value.upper().split())
 
     if not CAR_NUMBER_PATTERN.fullmatch(cleaned_value):
@@ -57,21 +55,8 @@ def validate_reservation_period(
     reservation_start: datetime,
     reservation_end: datetime,
 ) -> tuple[datetime, datetime]:
-    """Validate a future reservation period with timezone-aware datetimes."""
-    if not isinstance(reservation_start, datetime):
-        raise ValueError("Reservation start must be a datetime.")
-
-    if not isinstance(reservation_end, datetime):
-        raise ValueError("Reservation end must be a datetime.")
-
-    if reservation_start.tzinfo is None or reservation_end.tzinfo is None:
-        raise ValueError(
-            "Reservation start and end times must include a timezone."
-        )
-
-    now = datetime.now(timezone.utc)
-
-    if reservation_start <= now:
+    """Validate a future reservation period using local parking time."""
+    if reservation_start <= datetime.now():
         raise ValueError("Reservation start time must be in the future.")
 
     if reservation_end <= reservation_start:

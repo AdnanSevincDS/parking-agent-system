@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timedelta
 
 import pytest
 
@@ -41,7 +41,7 @@ def test_validate_car_number_rejects_invalid_values(value: str) -> None:
 
 def test_validate_reservation_period_accepts_future_period() -> None:
     """Test that validate_reservation_period accepts a valid future period."""
-    reservation_start = datetime.now(timezone.utc) + timedelta(days=1)
+    reservation_start = datetime.now() + timedelta(days=1)
     reservation_end = reservation_start + timedelta(hours=2)
 
     result_start, result_end = validate_reservation_period(
@@ -52,15 +52,15 @@ def test_validate_reservation_period_accepts_future_period() -> None:
 
 def test_validate_reservation_period_rejects_past_start() -> None:
     """Test that validate_reservation_period rejects a past start time."""
-    reservation_start = datetime.now(timezone.utc) - timedelta(days=1)
-    reservation_end = datetime.now(timezone.utc) + timedelta(hours=1)
+    reservation_start = datetime.now() - timedelta(days=1)
+    reservation_end = datetime.now() + timedelta(hours=1)
 
     with pytest.raises(ValueError):
         validate_reservation_period(reservation_start, reservation_end)
 
 def test_validate_reservation_period_rejects_end_before_start() -> None:
     """Test that validate_reservation_period rejects an end time before start."""
-    reservation_start = datetime.now(timezone.utc) + timedelta(days=1)
+    reservation_start = datetime.now() + timedelta(days=1)
     reservation_end = reservation_start - timedelta(hours=1)
 
     with pytest.raises(ValueError):

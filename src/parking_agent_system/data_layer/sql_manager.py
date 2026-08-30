@@ -70,7 +70,7 @@ class ParkingDatabase:
             reservation_start before calling this method.
         """
         reservation_id = uuid4()
-        created_at = datetime.now().astimezone().isoformat()
+        created_at = datetime.now()
 
         with self._connect() as connection:
             connection.execute(

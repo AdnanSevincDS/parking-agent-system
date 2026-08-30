@@ -7,7 +7,7 @@ def main() -> None:
     database = ParkingDatabase()
     database.initialize_schema()
 
-    reservation_start = datetime.now().astimezone() + timedelta(days=1)
+    reservation_start = datetime.now() + timedelta(days=1)
     reservation_end = reservation_start + timedelta(hours=2)
 
     reservation_id = database.create_pending_reservation(

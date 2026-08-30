@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timedelta
 from uuid import uuid4
 
 from parking_agent_system.data_layer.sql_manager import (
@@ -11,7 +11,7 @@ def test_create_and_get_pending_reservation(tmp_path) -> None:
     database.initialize_schema()
 
     conversation_id = uuid4()
-    reservation_start = datetime.now(timezone.utc) + timedelta(days=1)
+    reservation_start = datetime.now() + timedelta(days=1)
     reservation_end = reservation_start + timedelta(hours=2)
 
     reservation_id = database.create_pending_reservation(
