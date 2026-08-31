@@ -7,19 +7,21 @@ import streamlit as st
 API_BASE_URL = os.getenv("PARKING_API_BASE_URL", "http://localhost:8000")
 CHAT_ENDPOINT = f"{API_BASE_URL}/chat"
 
+
 st.set_page_config(
     page_title="Parking Agent System",
     page_icon="🅿️",
     layout="centered",
 )
 
-if st.sidebar.button("Clear chat"):
+st.title("🅿️ Parking Agent System")
+st.caption("Ask questions about parking information and reservations.")
+
+# Placed directly in the main layout
+if st.button("Clear chat", type="secondary"):
     st.session_state.messages = []
     st.session_state.conversation_id = str(uuid4())
     st.rerun()
-
-st.title("🅿️ Parking Agent System")
-st.caption("Ask questions about parking information and reservations.")
 
 if "conversation_id" not in st.session_state:
     st.session_state.conversation_id = str(uuid4())
@@ -65,7 +67,7 @@ if user_message:
             st.markdown(user_message)
 
     with st.chat_message("assistant"):
-        with st.spinner("Checking parking information..."):
+        with st.spinner("Thinking..."):
             try:
                 response = httpx.post(
                     CHAT_ENDPOINT,
