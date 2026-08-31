@@ -12,8 +12,6 @@ from parking_agent_system.api.schemas import (
     SourceReference,
 )
 
-from parking_agent_system.services import reservation_flow
-
 router = APIRouter(tags=["system"])
 agent = ParkingChatAgent()
 
@@ -41,18 +39,11 @@ def chat(request: ChatRequest) -> ChatResponse:
         if isinstance(doc_id, str) and isinstance(title, str) and doc_id not in seen:
             seen.add(doc_id)
             source_refs.append(SourceReference(document_id=doc_id, title=title))
-
-    session = reservation_flow._sessions.get(request.conversation_id)
+    
     return ChatResponse(
         conversation_id =request.conversation_id,
         message=message,
-        intent=Intent.RESERVATION if session else Intent.INFORMATION,
-        conversation_status=(
-            ConversationStatus.COLLECTING_RESERVATION_DETAILS
-            if session
-            else ConversationStatus.ANSWERED
-        ),
+        intent=Intent.INFORMATION,
+        conversation_status=ConversationStatus.ANSWERED,
         sources=source_refs
     )
-
-    
