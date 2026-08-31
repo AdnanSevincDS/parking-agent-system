@@ -58,13 +58,3 @@ class ReservationService:
             reservation_id=reservation_id,
             status=PENDING_APPROVAL_STATUS,
         )
-
-        svc = reservation_service or ReservationService()
-        result = svc.create_pending_reservation(
-            conversation_id=conversation_id,
-            customer_name=collected["name"],
-            customer_surname=collected["surname"],
-            car_number=collected["car_number"],
-            reservation_start=collected["reservation_start"],
-            reservation_end=collected["reservation_end"]
-        )
