@@ -1,5 +1,8 @@
-from fastapi import APIRouter, HTTPException, status
+import logging
+logger = logging.getLogger(__name__)
 
+from fastapi import APIRouter, HTTPException, status
+from parking_agent_system.agents.user_agent import ParkingChatAgent
 from parking_agent_system.api.schemas import (
     ChatRequest,
     ChatResponse,
@@ -8,64 +11,48 @@ from parking_agent_system.api.schemas import (
     Intent,
     SourceReference,
 )
-from parking_agent_system.services.rag_service import ParkingRAGService
+
+from parking_agent_system.services import reservation_flow
 
 router = APIRouter(tags=["system"])
+agent = ParkingChatAgent()
 
-rag_service = ParkingRAGService()
-
-@router.get(
-    "/health",
-    response_model=HealthResponse,
-    summary="check backend health",
-)
+@router.get("/health", response_model=HealthResponse)
 def health_check() -> HealthResponse:
-    """Return a safe confirmation that the backend is running."""
+    """Health check endpoint to verify the service is running."""
     return HealthResponse()
 
-@router.post(
-    "/chat",
-    response_model=ChatResponse,
-    summary="Ask a parking-information question",
-)
+@router.post("/chat", response_model=ChatResponse)
 def chat(request: ChatRequest) -> ChatResponse:
-    """
-    Answer a parking information question using a RAG (Retrieval-Augmented Generation) approach.
-    """
     try:
-        answer, documents = rag_service.answer_question(request.message, top_k=3)
+        message, sources = agent.run(request.message, request.conversation_id)
     except Exception as error:
+        logger.exception("chat handler failed")
         raise HTTPException(
             status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
-            detail="The parking assistant is temporarily unavailable."
+            detail="The parking assistant is temporarily unavailable.",
         ) from error
     
-    sources: list[SourceReference] = []
-    seen_document_ids: set[str] = set()
+    source_refs: list[SourceReference] = []
+    seen: set[str] = set()
+    for doc in sources:
+        doc_id = doc.metadata.get("document_id")
+        title = doc.metadata.get("title")
+        if isinstance(doc_id, str) and isinstance(title, str) and doc_id not in seen:
+            seen.add(doc_id)
+            source_refs.append(SourceReference(document_id=doc_id, title=title))
 
-    for document in documents:
-        document_id = document.metadata.get("document_id")
-        title = document.metadata.get("title")
-
-        if not isinstance(document_id, str) or not isinstance(title, str):
-            continue
-
-        # Avoid duplicate citations
-        if document_id in seen_document_ids:
-            continue
-
-        seen_document_ids.add(document_id)
-        sources.append(
-            SourceReference(
-                document_id=document_id, 
-                title=title
-                )
-        )
-
+    session = reservation_flow._sessions.get(request.conversation_id)
     return ChatResponse(
-        conversation_id=request.conversation_id,
-        message=answer,
-        intent=Intent.INFORMATION,
-        conversation_status=ConversationStatus.ANSWERED,
-        sources=sources
+        conversation_id =request.conversation_id,
+        message=message,
+        intent=Intent.RESERVATION if session else Intent.INFORMATION,
+        conversation_status=(
+            ConversationStatus.COLLECTING_RESERVATION_DETAILS
+            if session
+            else ConversationStatus.ANSWERED
+        ),
+        sources=source_refs
     )
+
+    

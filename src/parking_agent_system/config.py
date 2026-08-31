@@ -40,6 +40,11 @@ class Settings(BaseSettings):
         default="nomic-embed-text:latest",
         validation_alias="OLLAMA_EMBEDDING_MODEL",
     )
+    
+    model_temperature: float = Field(
+        default=0.0,
+        validation_alias="MODEL_TEMPERATURE",
+    )
 
     parking_capacity: int = Field(
         default=20,

@@ -1,10 +1,13 @@
-from parking_agent_system.services.rag_service import ParkingRAGService
-
 from fastapi import FastAPI
-
 from parking_agent_system.api.routes_chat import router
+from parking_agent_system.telemetry import setup_phoenix_telemetry
+
+# 1. Initialize Phoenix/OpenTelemetry before starting the app
+setup_phoenix_telemetry()
 
 
+
+# 2. Define the FastAPI app
 app = FastAPI(
     title="Parking Agent System",
     version="0.1.0",
@@ -12,7 +15,6 @@ app = FastAPI(
 )
 
 app.include_router(router)
-
 
 @app.get("/", tags=["system"])
 def root() -> dict[str, str]:
