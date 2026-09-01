@@ -7,6 +7,7 @@ from langgraph.checkpoint.memory import MemorySaver
 from langchain.agents import create_agent
 
 from parking_agent_system.config import settings
+from parking_agent_system.config_rag import rag_config
 from parking_agent_system.data_layer.vector_manager import ParkingVectorStore
 from parking_agent_system.tools.parking_info import build_parking_info_tool
 from parking_agent_system.tools.reservation import build_reservation_tool
@@ -16,16 +17,16 @@ SYSTEM_PROMPT = settings.system_prompt_path.read_text(encoding="utf-8").strip()
 class ParkingChatAgent:
     def __init__(self, vector_store: ParkingVectorStore | None = None):
         self._llm = ChatOllama(
-            model=settings.ollama_chat_model,
+            model=settings.model,
             base_url=settings.ollama_base_url,
-            temperature=settings.model_temperature,
+            temperature=rag_config.temperature,
         )
         self._vector_store = vector_store or ParkingVectorStore()
         self._retrieved_docs: dict[str, list[Document]] = {}
         self._memory = MemorySaver()
 
         tools = [
-            build_parking_info_tool(self._vector_store, self._retrieved_docs),
+            build_parking_info_tool(self._vector_store, self._retrieved_docs, self._llm),
             build_reservation_tool(),
         ]
         self._agent = create_agent(

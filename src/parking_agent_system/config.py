@@ -32,20 +32,12 @@ class Settings(BaseSettings):
         default="http://localhost:11434",
         validation_alias="OLLAMA_BASE_URL",
     )
-    ollama_chat_model: str = Field(
+
+    model: str = Field(
         default="qwen2.5:7b",
-        validation_alias="OLLAMA_CHAT_MODEL",
-    )
-    ollama_embedding_model: str = Field(
-        default="nomic-embed-text:latest",
-        validation_alias="OLLAMA_EMBEDDING_MODEL",
+        validation_alias="LLM",
     )
     
-    model_temperature: float = Field(
-        default=0.0,
-        validation_alias="MODEL_TEMPERATURE",
-    )
-
     parking_capacity: int = Field(
         default=20,
         gt=0,

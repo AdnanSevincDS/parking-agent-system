@@ -1,6 +1,9 @@
 from pathlib import Path
 import yaml
 
+from parking_agent_system.config import settings
+from parking_agent_system.config_rag import rag_config
+
 from langchain_core.documents import Document
 from langchain_milvus import Milvus
 from langchain_ollama import OllamaEmbeddings
@@ -18,11 +21,12 @@ class ParkingVectorStore:
     """Manages public static parking knowledge in a Milvus Lite."""
 
     def __init__(self,
-        chunk_size: int = 500,
-        chunk_overlap: int = 50
+        chunk_size: int = rag_config.chunk_size,
+        chunk_overlap: int = rag_config.chunk_overlap,
+        top_k: int = rag_config.top_k
     ):
         self._embeddings = OllamaEmbeddings(
-            model=settings.ollama_embedding_model,
+            model=rag_config.embedding_model,
             base_url=settings.ollama_base_url,
         )
         self._text_splitter = RecursiveCharacterTextSplitter(
@@ -108,7 +112,7 @@ class ParkingVectorStore:
 
         return len(chunks)
 
-    def search(self, query: str, top_k: int = 3) -> list[Document]:
+    def search(self, query: str, top_k: int) -> list[Document]:
         """
         Search the Milvus vector store for relevant documents.
 
@@ -127,8 +131,6 @@ class ParkingVectorStore:
         if not cleaned_query:
             raise ValueError("Query cannot be empty.")
         
-        if not 1 <= top_k <= 10:
-            raise ValueError("top_k must be between 1 and 10.")
 
         vector_store = self._create_vector_store(drop_old=False)
         results = vector_store.similarity_search(cleaned_query, k=top_k)
