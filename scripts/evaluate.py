@@ -177,7 +177,6 @@ def main() -> None:
 
     print("Loading evaluation dataset...")
     dataset = load_dataset(EVAL_DATASET_PATH)
-    dataset = dataset[:2]
     print(f"{len(dataset)} questions loaded.\n")
 
     agent = ParkingChatAgent()
