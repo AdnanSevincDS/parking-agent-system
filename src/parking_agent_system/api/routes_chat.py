@@ -25,7 +25,7 @@ def health_check() -> HealthResponse:
 @router.post("/chat", response_model=ChatResponse)
 def chat(request: ChatRequest) -> ChatResponse:
     #1. Guard: check input before sending to LLM
-    is_safe, reason = guard_rails.check__input(request.message)
+    is_safe, reason = guard_rails.check_input(request.message)
     if not is_safe:
         logger.warning(f"Guardrails detected unsafe input: {request.message}")
         raise HTTPException(
