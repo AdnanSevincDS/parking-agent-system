@@ -56,3 +56,26 @@ class ChatResponse(BaseModel):
     conversation_status: ConversationStatus
 
     sources: list[SourceReference] = Field(default_factory=list)
+
+class AdminChatRequest(BaseModel):
+    conversation_id: UUID = Field(default_factory=uuid4)
+    message: str
+
+class AdminChatResponse(BaseModel):
+    conversation_id: UUID
+    message: str
+
+class PendingReservation(BaseModel):
+    reservation_id: str
+    conversation_id: str
+    customer_name: str
+    customer_surname: str
+    car_number: str
+    reservation_start: str
+    reservation_end: str
+    status: str
+    created_at: str
+
+class PendingReservationsResponse(BaseModel):
+    reservations: list[PendingReservation]
+    total: int
