@@ -11,6 +11,7 @@ from parking_agent_system.config_rag import rag_config
 from parking_agent_system.data_layer.vector_manager import ParkingVectorStore
 from parking_agent_system.tools.parking_info import build_parking_info_tool
 from parking_agent_system.tools.reservation import build_reservation_tool
+from parking_agent_system.tools.escalate_to_admin import build_escalate_to_admin_tool
 
 USER_SYSTEM_PROMPT = settings.user_system_prompt_path.read_text(encoding="utf-8").strip()
 
@@ -30,6 +31,7 @@ class ParkingChatAgent:
         tools = [
             build_parking_info_tool(self._vector_store, self._retrieved_docs, self._llm),
             build_reservation_tool(),
+            build_escalate_to_admin_tool(),
         ]
         self._agent = create_agent(
             model=self._llm,
