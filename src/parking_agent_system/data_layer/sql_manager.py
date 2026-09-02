@@ -127,3 +127,42 @@ class ParkingDatabase:
                 (str(reservation_id),),
             ).fetchone()
         return dict(row) if row else None
+    
+    def update_reservation_status(self, reservation_id: UUID, status: str) -> bool:
+        """
+        Update the status of a reservation request. Returns True if the update was successful, False if the reservation_id does not exist.
+        """
+        with self._connect() as connection:
+            cursor = connection.execute(
+                """
+                UPDATE reservation_requests
+                SET status = ?
+                WHERE reservation_id = ?
+                """,
+                (status, str(reservation_id)),
+            )
+        return cursor.rowcount > 0
+    
+    def get_pending_reservations(self) -> list[dict[str, str]]:
+        """
+        Return all reservation requests that are pending approval.
+        """
+        with self._connect() as connection:
+            rows = connection.execute(
+                """
+                SELECT
+                    reservation_id,
+                    conversation_id,
+                    customer_name,
+                    customer_surname,
+                    car_number,
+                    reservation_start,
+                    reservation_end,
+                    status,
+                    created_at
+                FROM reservation_requests
+                WHERE status = ?
+                """,
+                (PENDING_APPROVAL_STATUS,),
+            ).fetchall()
+        return [dict(row) for row in rows]
