@@ -1,5 +1,6 @@
 from fastapi import FastAPI
 from parking_agent_system.api.routes_chat import router
+from parking_agent_system.api.routes_admin import router as admin_router
 from parking_agent_system.telemetry import setup_phoenix_telemetry
 
 # 1. Initialize Phoenix/OpenTelemetry before starting the app
@@ -15,6 +16,7 @@ app = FastAPI(
 )
 
 app.include_router(router)
+app.include_router(admin_router)
 
 @app.get("/", tags=["system"])
 def root() -> dict[str, str]:
