@@ -12,7 +12,7 @@ from parking_agent_system.data_layer.vector_manager import ParkingVectorStore
 from parking_agent_system.tools.parking_info import build_parking_info_tool
 from parking_agent_system.tools.reservation import build_reservation_tool
 
-SYSTEM_PROMPT = settings.system_prompt_path.read_text(encoding="utf-8").strip()
+USER_SYSTEM_PROMPT = settings.user_system_prompt_path.read_text(encoding="utf-8").strip()
 
 class ParkingChatAgent:
     def __init__(self, vector_store: ParkingVectorStore | None = None):
@@ -35,7 +35,7 @@ class ParkingChatAgent:
             model=self._llm,
             tools=tools,
             checkpointer=self._memory,
-            system_prompt=SYSTEM_PROMPT,
+            system_prompt=USER_SYSTEM_PROMPT,
         )
 
     def run(self, message: str, conversation_id: UUID) -> tuple[str, list[Document]]:

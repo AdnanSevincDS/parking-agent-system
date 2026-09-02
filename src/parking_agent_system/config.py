@@ -53,9 +53,14 @@ class Settings(BaseSettings):
         validation_alias="LLM_MAX_OUTPUT_TOKENS",
     )
 
-    system_prompt_path: Path = Field(
-        default=PROMPTS_DIR / "prompt.txt",
-        validation_alias="SYSTEM_PROMPT_PATH",
+    user_system_prompt_path: Path = Field(
+        default=PROMPTS_DIR / "user_system_prompt.txt",
+        validation_alias="USER_SYSTEM_PROMPT_PATH",
+    )
+
+    admin_system_prompt_path: Path = Field(
+        default=PROMPTS_DIR / "admin_system_prompt.txt",
+        validation_alias="ADMIN_SYSTEM_PROMPT_PATH",
     )
 
     @field_validator("sqlite_db_path", "milvus_db_path", mode="before")
