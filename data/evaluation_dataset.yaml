@@ -1,51 +1,57 @@
 qa_pairs:
   - question: "What are the parking operating hours?"
-    relevant_doc_id: "parking-hours"
+    relevant_doc_ids: ["parking-hours"]
     reference_answer: "The parking facility is open 24 hours a day, 7 days a week, including Sundays and public holidays."
     context: "The parking facility operates 24 hours a day, 7 days a week, including Sundays and public holidays."
+
   - question: "Where is the parking facility located?"
-    relevant_doc_id: "parking-location"
-    reference_answer: "It’s located at Złote Tarasy, ul. Złota 59, 00-120 Warsaw, Poland."
+    relevant_doc_ids: ["parking-location"]
+    reference_answer: "It's located at Złote Tarasy, ul. Złota 59, 00-120 Warsaw, Poland."
     context: "The parking facility is located at Złote Tarasy, ul. Złota 59, 00-120 Warsaw, Poland."
+
   - question: "What is the phone number for the parking office?"
-    relevant_doc_id: "parking-contact"
+    relevant_doc_ids: ["parking-contact"]
     reference_answer: "You can reach the Parking Office at +48 22 222 00 96."
     context: "Parking Office Phone: +48 22 222 00 96"
+
   - question: "What is the email address for parking?"
-    relevant_doc_id: "parking-contact"
+    relevant_doc_ids: ["parking-contact"]
     reference_answer: "The Parking Office email address is ztservice@interparking.com."
     context: "Parking Office Email: ztservice@interparking.com"
+
   - question: "How much does parking cost per hour?"
-    relevant_doc_id: "parking-pricing-info"
+    relevant_doc_ids: ["parking-pricing-info"]
     reference_answer: "Parking uses dynamic pricing. Historical reference rates started from 6.00 PLN per hour, but current charges vary with demand and must be confirmed with the parking administration."
     context: |
       Parking prices are dynamic and may depend on the parking zone, time of day, and current demand.
-      The assistant can provide current prices only when dynamic pricing data is available in the operational database. Static information should not be treated as a current price quote.
       Historical reference rates start from 6.00 PLN per hour, but current charges may differ.
+
   - question: "Are monthly subscriptions available?"
-    relevant_doc_id: "parking-pricing-info"
-    reference_answer: "Yes. Indicative rates include 24/7 access at 140.00 EUR net per month and weekday access (Mon–Fri, 07:00–19:00) at 120.00 EUR net per month, subject to availability and confirmation by the parking administration."
+    relevant_doc_ids: ["parking-pricing-info"]
+    reference_answer: "Yes. Indicative rates include 24/7 access at 140.00 EUR net per month and weekday access (Mon–Fri, 07:00–19:00) at 120.00 EUR net per month, subject to availability and confirmation by the parking administration."
     context: |
       Long-term subscriptions may be available:
       - 24/7 continuous access: 140.00 EUR net per month.
       - Daily or business access, Monday to Friday from 07:00 to 19:00: 120.00 EUR net per month.
-      Subscription availability, prices, and terms must be confirmed with the parking administration.
+
   - question: "How do I make a parking reservation?"
-    relevant_doc_id: "parking-booking-rules"
+    relevant_doc_ids: ["parking-booking-rules"]
     reference_answer: "For a short-term reservation, provide your name, surname, car registration number, and desired reservation period to the virtual assistant. The request remains unconfirmed until approved by the administrator."
-    context: "To request a short-term parking reservation, users provide their name, surname, car registration number, and requested reservation period to the virtual assistant. A reservation request is not confirmed until it receives administrator approval."
+    context: "To request a short-term parking reservation, users provide their name, surname, car registration number, and requested reservation period to the virtual assistant."
+
   - question: "How do I cancel my reservation?"
-    relevant_doc_id: "parking-cancellation"
-    reference_answer: "You can cancel a short-term reservation request before administrator approval. After approval, contact the parking office for cancellation or changes. Subscription cancellations require written notice per the agreement terms."
+    relevant_doc_ids: ["parking-cancellation", "parking-booking-rules"]
+    reference_answer: "You can cancel a short-term reservation request before administrator approval. After approval, contact the parking office for cancellation or changes."
     context: |
       Short-term reservation requests may be cancelled before administrator approval.
       After approval, customers must contact the parking office to request a cancellation or modification.
-      Monthly subscription cancellation or modification requires prior written notice to the administration office and is subject to the signed agreement terms.
+
   - question: "How many parking spaces does the facility have?"
-    relevant_doc_id: "parking-accessibility"
+    relevant_doc_ids: ["parking-accessibility"]
     reference_answer: "The facility offers 1,032 parking spaces spread across three underground levels: -1, -2, and -3."
     context: "The parking facility has 1032 parking spaces distributed across three underground levels: -1, -2, and -3."
+
   - question: "Is there bicycle parking available?"
-    relevant_doc_id: "parking-accessibility"
+    relevant_doc_ids: ["parking-accessibility"]
     reference_answer: "Yes. A free, unguarded bicycle and scooter parking area is on Level -1 near the ul. Złota entrance, with basic maintenance tools like wrenches, pliers, and a pump provided."
-    context: "A free, unguarded parking area for bicycles and scooters is available on Level -1 near the ul. Złota entrance. Basic maintenance tools, including wrenches, pliers, and a pump, are available for use."
+    context: "A free, unguarded parking area for bicycles and scooters is available on Level -1 near the ul. Złota entrance."
