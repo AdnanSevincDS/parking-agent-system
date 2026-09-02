@@ -1,6 +1,153 @@
-user_input,retrieved_contexts,response,reference,faithfulness,context_precision,context_recall,question,retrieved_doc_ids,latency_ms,recall_at_k,precision_at_k,hit_rate_at_k
-What are the parking operating hours?,"['The parking facility operates 24 hours a day, 7 days a week, including Sundays and public holidays.', '- Daily or business access, Monday to Friday from 07:00 to 19:00: 120.00 EUR net per month.\nSubscription availability, prices, and terms must be confirmed with the parking administration.', 'The facility supports short-term parking and monthly subscriptions.\nTo request a short-term parking reservation, users provide their name, surname, car registration number, and requested reservation period to the virtual assistant.\nA reservation request is not confirmed until it receives administrator approval.\nMonthly subscription requests may also be initiated through the virtual assistant. Subscription terms and agreement requirements are confirmed by the parking administration.']","The parking facility operates 24 hours a day, 7 days a week, including Sundays and public holidays.
+user_input,retrieved_contexts,response,reference,faithfulness,context_precision,context_recall,retrieved_doc_ids,reference_doc_ids,reference_context,latency_ms,recall_at_k,precision_at_k
+What are the parking operating hours?,"The parking facility operates 24 hours a day, 7 days a week, including Sundays and public holidays.
+---
+- Daily or business access, Monday to Friday from 07:00 to 19:00: 120.00 EUR net per month.
+Subscription availability, prices, and terms must be confirmed with the parking administration.
+---
+The facility supports short-term parking and monthly subscriptions.
+To request a short-term parking reservation, users provide their name, surname, car registration number, and requested reservation period to the virtual assistant.
+A reservation request is not confirmed until it receives administrator approval.
+Monthly subscription requests may also be initiated through the virtual assistant. Subscription terms and agreement requirements are confirmed by the parking administration.","The parking facility operates 24 hours a day, 7 days a week, including Sundays and public holidays.
 
 For daily or business access from Monday to Friday between 07:00 and 19:00, the cost is 120.00 EUR per month. Subscription availability, prices, and terms must be confirmed with the parking administration.
 
-If you need to make a short-term parking reservation, please provide your name, surname, car registration number (format: AB 1234 CD), and the requested reservation period. A reservation request is not confirmed until it receives administrator approval. Monthly subscription requests can also be initiated through our virtual assistant; however, terms and agreement requirements are confirmed by the parking administration.","The parking facility is open 24 hours a day, 7 days a week, including Sundays and public holidays.",0.9,0.9999999999,1.0,What are the parking operating hours?,"parking-hours, parking-pricing-info, parking-booking-rules",15409.22,1.0,0.3333,1.0
+If you need to make a short-term parking reservation, please provide your name, surname, car registration number (format: AB 1234 CD), and the requested reservation period. A reservation request is not confirmed until it receives administrator approval. Monthly subscription requests can also be initiated through our virtual assistant; however, terms and agreement requirements are confirmed by the parking administration.","The parking facility is open 24 hours a day, 7 days a week, including Sundays and public holidays.",0.9,0.9999999999,1.0,"parking-hours, parking-pricing-info, parking-booking-rules",parking-hours,"The parking facility operates 24 hours a day, 7 days a week, including Sundays and public holidays.",16412.27,1.0,1.0
+Where is the parking facility located?,"For assistance, lost-ticket requests, or invoice requests, the Customer Service Parking Office is located on Level -1 near the exit towards ul. Złota in the Green-Yellow section.
+Parking Office Phone: +48 22 222 00 96
+Parking Office Email: ztservice@interparking.com
+General Mall Information Phone: +48 22 222 22 00
+General Mall Information Email: infopunkt@zlotetarasy.pl
+---
+This knowledge base contains public reference information that may change over time.
+Current availability, real-time parking prices, access restrictions, subscription terms, and reservation decisions must be obtained from the operational system or confirmed by the parking administration.
+The assistant must not treat static reference information as proof of current space availability or reservation confirmation.
+---
+The parking facility is located at Złote Tarasy, ul. Złota 59, 00-120 Warsaw, Poland.
+The underground parking complex can be accessed through entrances and exits located on:
+- Al. Jana Pawła II
+- ul. Emilii Plater
+- ul. Złota","The parking facility is located at Złote Tarasy, ul. Złota 59, 00-120 Warsaw, Poland. You can access the underground parking complex through entrances and exits on Al. Jana Pawła II, ul. Emilii Plater, or ul. Złota. For assistance, you can contact the Customer Service Parking Office located on Level -1 near the exit towards ul. Złota in the Green-Yellow section. Their phone number is +48 22 222 00 96 and their email is ztservice@interparking.com.","It's located at Złote Tarasy, ul. Złota 59, 00-120 Warsaw, Poland.",1.0,0.3333333333,1.0,"parking-contact, knowledge-base-disclaimer, parking-location",parking-location,"The parking facility is located at Złote Tarasy, ul. Złota 59, 00-120 Warsaw, Poland.",7971.25,1.0,1.0
+What is the phone number for the parking office?,"For assistance, lost-ticket requests, or invoice requests, the Customer Service Parking Office is located on Level -1 near the exit towards ul. Złota in the Green-Yellow section.
+Parking Office Phone: +48 22 222 00 96
+Parking Office Email: ztservice@interparking.com
+General Mall Information Phone: +48 22 222 22 00
+General Mall Information Email: infopunkt@zlotetarasy.pl
+---
+The facility supports short-term parking and monthly subscriptions.
+To request a short-term parking reservation, users provide their name, surname, car registration number, and requested reservation period to the virtual assistant.
+A reservation request is not confirmed until it receives administrator approval.
+Monthly subscription requests may also be initiated through the virtual assistant. Subscription terms and agreement requirements are confirmed by the parking administration.
+---
+This knowledge base contains public reference information that may change over time.
+Current availability, real-time parking prices, access restrictions, subscription terms, and reservation decisions must be obtained from the operational system or confirmed by the parking administration.
+The assistant must not treat static reference information as proof of current space availability or reservation confirmation.","The phone number for the parking office is +48 22 222 00 96. You can call this number for assistance, lost-ticket requests, or invoice requests. The office is located on Level -1 near the exit towards ul. Złota in the Green-Yellow section.",You can reach the Parking Office at +48 22 222 00 96.,1.0,0.9999999999,1.0,"parking-contact, parking-booking-rules, knowledge-base-disclaimer",parking-contact,Parking Office Phone: +48 22 222 00 96,5558.91,1.0,1.0
+What is the email address for parking?,"The facility supports short-term parking and monthly subscriptions.
+To request a short-term parking reservation, users provide their name, surname, car registration number, and requested reservation period to the virtual assistant.
+A reservation request is not confirmed until it receives administrator approval.
+Monthly subscription requests may also be initiated through the virtual assistant. Subscription terms and agreement requirements are confirmed by the parking administration.
+---
+This knowledge base contains public reference information that may change over time.
+Current availability, real-time parking prices, access restrictions, subscription terms, and reservation decisions must be obtained from the operational system or confirmed by the parking administration.
+The assistant must not treat static reference information as proof of current space availability or reservation confirmation.
+---
+For assistance, lost-ticket requests, or invoice requests, the Customer Service Parking Office is located on Level -1 near the exit towards ul. Złota in the Green-Yellow section.
+Parking Office Phone: +48 22 222 00 96
+Parking Office Email: ztservice@interparking.com
+General Mall Information Phone: +48 22 222 22 00
+General Mall Information Email: infopunkt@zlotetarasy.pl","The email address for parking assistance is ztservice@interparking.com. For any issues related to lost tickets or invoice requests, you can contact the Customer Service Parking Office located on Level -1 near the exit towards ul. Złota in the Green-Yellow section.",The Parking Office email address is ztservice@interparking.com.,1.0,0.3333333333,1.0,"parking-booking-rules, knowledge-base-disclaimer, parking-contact",parking-contact,Parking Office Email: ztservice@interparking.com,7426.58,1.0,1.0
+How much does parking cost per hour?,"Parking prices are dynamic and may depend on the parking zone, time of day, and current demand.
+The assistant can provide current prices only when dynamic pricing data is available in the operational database. Static information should not be treated as a current price quote.
+Historical reference rates start from 6.00 PLN per hour, but current charges may differ.
+Long-term subscriptions may be available:
+- 24/7 continuous access: 140.00 EUR net per month.
+---
+The parking facility operates 24 hours a day, 7 days a week, including Sundays and public holidays.
+---
+- Daily or business access, Monday to Friday from 07:00 to 19:00: 120.00 EUR net per month.
+Subscription availability, prices, and terms must be confirmed with the parking administration.","Parking costs can vary based on the zone and time of day, but historically, rates have started at 6.00 PLN per hour. For current pricing, please check directly with the parking facility as dynamic pricing data is required for accurate information.
+
+For long-term subscriptions:
+- 24/7 continuous access: 140.00 EUR net per month.
+- Daily or business access (Monday to Friday from 07:00 to 19:00): 120.00 EUR net per month.
+
+These rates are subject to change, so it's best to confirm the current prices with the parking administration.","Parking uses dynamic pricing. Historical reference rates started from 6.00 PLN per hour, but current charges vary with demand and must be confirmed with the parking administration.",1.0,0.9999999999,1.0,"parking-pricing-info, parking-hours, parking-pricing-info",parking-pricing-info,"Parking prices are dynamic and may depend on the parking zone, time of day, and current demand.
+Historical reference rates start from 6.00 PLN per hour, but current charges may differ.
+",8032.47,1.0,1.0
+Are monthly subscriptions available?,"The facility supports short-term parking and monthly subscriptions.
+To request a short-term parking reservation, users provide their name, surname, car registration number, and requested reservation period to the virtual assistant.
+A reservation request is not confirmed until it receives administrator approval.
+Monthly subscription requests may also be initiated through the virtual assistant. Subscription terms and agreement requirements are confirmed by the parking administration.
+---
+- Daily or business access, Monday to Friday from 07:00 to 19:00: 120.00 EUR net per month.
+Subscription availability, prices, and terms must be confirmed with the parking administration.
+---
+Parking prices are dynamic and may depend on the parking zone, time of day, and current demand.
+The assistant can provide current prices only when dynamic pricing data is available in the operational database. Static information should not be treated as a current price quote.
+Historical reference rates start from 6.00 PLN per hour, but current charges may differ.
+Long-term subscriptions may be available:
+- 24/7 continuous access: 140.00 EUR net per month.","Monthly subscriptions are indeed available at the facility. For a 24/7 continuous access subscription, the cost is 140.00 EUR net per month. However, for more detailed information or to initiate a subscription request, you should contact the parking administration directly.
+
+For short-term parking reservations, you can provide your name, surname, car registration number, and requested reservation period to me, and I will assist with booking. Subscription terms and agreement requirements are also confirmed by the parking administration.","Yes. Indicative rates include 24/7 access at 140.00 EUR net per month and weekday access (Mon–Fri, 07:00–19:00) at 120.00 EUR net per month, subject to availability and confirmation by the parking administration.",0.8333333333333334,0.9999999999666667,0.6666666666666666,"parking-booking-rules, parking-pricing-info, parking-pricing-info",parking-pricing-info,"Long-term subscriptions may be available:
+- 24/7 continuous access: 140.00 EUR net per month.
+- Daily or business access, Monday to Friday from 07:00 to 19:00: 120.00 EUR net per month.
+",7715.16,1.0,1.0
+Which streets have entrances to the underground parking complex?,"The parking facility has 1032 parking spaces distributed across three underground levels: -1, -2, and -3.
+The facility is intended for passenger cars, including vehicles with LPG installations, with a maximum height clearance of 2.0 meters.
+A free, unguarded parking area for bicycles and scooters is available on Level -1 near the ul. Złota entrance. Basic maintenance tools, including wrenches, pliers, and a pump, are available for use.
+---
+The parking facility is located at Złote Tarasy, ul. Złota 59, 00-120 Warsaw, Poland.
+The underground parking complex can be accessed through entrances and exits located on:
+- Al. Jana Pawła II
+- ul. Emilii Plater
+- ul. Złota
+---
+The facility supports short-term parking and monthly subscriptions.
+To request a short-term parking reservation, users provide their name, surname, car registration number, and requested reservation period to the virtual assistant.
+A reservation request is not confirmed until it receives administrator approval.
+Monthly subscription requests may also be initiated through the virtual assistant. Subscription terms and agreement requirements are confirmed by the parking administration.","The underground parking complex can be accessed through entrances located on Al. Jana Pawła II, ul. Emilii Plater, and ul. Złota.","The underground parking complex can be accessed from Al. Jana Pawła II, ul. Emilii Plater, and ul. Złota.",1.0,0.49999999995,1.0,"parking-accessibility, parking-location, parking-booking-rules",parking-location,"The underground parking complex can be accessed through entrances and exits located on:
+- Al. Jana Pawła II
+- ul. Emilii Plater
+- ul. Złota
+",4931.78,1.0,1.0
+How do I cancel my reservation?,"Short-term reservation requests may be cancelled before administrator approval.
+After approval, customers must contact the parking office to request a cancellation or modification.
+Monthly subscription cancellation or modification requires prior written notice to the administration office and is subject to the signed agreement terms.
+---
+The facility supports short-term parking and monthly subscriptions.
+To request a short-term parking reservation, users provide their name, surname, car registration number, and requested reservation period to the virtual assistant.
+A reservation request is not confirmed until it receives administrator approval.
+Monthly subscription requests may also be initiated through the virtual assistant. Subscription terms and agreement requirements are confirmed by the parking administration.
+---
+For assistance, lost-ticket requests, or invoice requests, the Customer Service Parking Office is located on Level -1 near the exit towards ul. Złota in the Green-Yellow section.
+Parking Office Phone: +48 22 222 00 96
+Parking Office Email: ztservice@interparking.com
+General Mall Information Phone: +48 22 222 22 00
+General Mall Information Email: infopunkt@zlotetarasy.pl","I do not have that information in the available parking knowledge base. However, based on the policies provided, after your reservation has been approved by an administrator, you should contact the parking office to request a cancellation or modification. You can reach them at +48 22 222 00 96 or via email at ztservice@interparking.com.
+
+If you need further assistance, please provide me with your name, surname, and car number so I can help guide you through the process more specifically.
+","You can cancel a short-term reservation request before administrator approval. After approval, contact the parking office for cancellation or changes.",0.8,0.99999999995,1.0,"parking-cancellation, parking-booking-rules, parking-contact","parking-cancellation, parking-booking-rules","Short-term reservation requests may be cancelled before administrator approval.
+After approval, customers must contact the parking office to request a cancellation or modification.
+",10046.46,1.0,1.0
+How many parking spaces does the facility have?,"The parking facility has 1032 parking spaces distributed across three underground levels: -1, -2, and -3.
+The facility is intended for passenger cars, including vehicles with LPG installations, with a maximum height clearance of 2.0 meters.
+A free, unguarded parking area for bicycles and scooters is available on Level -1 near the ul. Złota entrance. Basic maintenance tools, including wrenches, pliers, and a pump, are available for use.
+---
+This knowledge base contains public reference information that may change over time.
+Current availability, real-time parking prices, access restrictions, subscription terms, and reservation decisions must be obtained from the operational system or confirmed by the parking administration.
+The assistant must not treat static reference information as proof of current space availability or reservation confirmation.
+---
+The facility supports short-term parking and monthly subscriptions.
+To request a short-term parking reservation, users provide their name, surname, car registration number, and requested reservation period to the virtual assistant.
+A reservation request is not confirmed until it receives administrator approval.
+Monthly subscription requests may also be initiated through the virtual assistant. Subscription terms and agreement requirements are confirmed by the parking administration.","The parking facility has 1032 parking spaces distributed across three underground levels: -1, -2, and -3.","The facility offers 1,032 parking spaces spread across three underground levels: -1, -2, and -3.",1.0,0.9999999999,1.0,"parking-accessibility, knowledge-base-disclaimer, parking-booking-rules",parking-accessibility,"The parking facility has 1032 parking spaces distributed across three underground levels: -1, -2, and -3.",4311.17,1.0,1.0
+Is there bicycle parking available?,"The parking facility has 1032 parking spaces distributed across three underground levels: -1, -2, and -3.
+The facility is intended for passenger cars, including vehicles with LPG installations, with a maximum height clearance of 2.0 meters.
+A free, unguarded parking area for bicycles and scooters is available on Level -1 near the ul. Złota entrance. Basic maintenance tools, including wrenches, pliers, and a pump, are available for use.
+---
+The parking facility is located at Złote Tarasy, ul. Złota 59, 00-120 Warsaw, Poland.
+The underground parking complex can be accessed through entrances and exits located on:
+- Al. Jana Pawła II
+- ul. Emilii Plater
+- ul. Złota
+---
+The parking facility operates 24 hours a day, 7 days a week, including Sundays and public holidays.","Yes, there is bicycle parking available in the facility. A free, unguarded area for bicycles and scooters is located on Level -1 near the ul. Złota entrance. Basic maintenance tools are also provided for your convenience.","Yes. A free, unguarded bicycle and scooter parking area is on Level -1 near the ul. Złota entrance, with basic maintenance tools like wrenches, pliers, and a pump provided.",1.0,0.9999999999,1.0,"parking-accessibility, parking-location, parking-hours",parking-accessibility,"A free, unguarded parking area for bicycles and scooters is available on Level -1 near the ul. Złota entrance.",4937.2,1.0,1.0

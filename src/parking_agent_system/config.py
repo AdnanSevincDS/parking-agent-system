@@ -38,6 +38,21 @@ class Settings(BaseSettings):
         validation_alias="LLM",
     )
 
+    model_eval: str = Field(
+        default="qwen2.5:7b",
+        validation_alias="LLM_EVAL",
+    )
+
+    llm_context_window: int = Field(
+        default=8192,
+        validation_alias="LLM_CONTEXT_WINDOW",
+    )
+
+    llm_max_output_tokens: int = Field(
+        default=2048,
+        validation_alias="LLM_MAX_OUTPUT_TOKENS",
+    )
+
     system_prompt_path: Path = Field(
         default=PROMPTS_DIR / "prompt.txt",
         validation_alias="SYSTEM_PROMPT_PATH",

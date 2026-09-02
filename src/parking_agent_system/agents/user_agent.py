@@ -20,6 +20,8 @@ class ParkingChatAgent:
             model=settings.model,
             base_url=settings.ollama_base_url,
             temperature=rag_config.temperature,
+            num_ctx=settings.llm_context_window,
+            num_predict=settings.llm_max_output_tokens,
         )
         self._vector_store = vector_store or ParkingVectorStore()
         self._retrieved_docs: dict[str, list[Document]] = {}

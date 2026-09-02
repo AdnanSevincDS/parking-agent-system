@@ -34,10 +34,14 @@ qa_pairs:
       - 24/7 continuous access: 140.00 EUR net per month.
       - Daily or business access, Monday to Friday from 07:00 to 19:00: 120.00 EUR net per month.
 
-  - question: "How do I make a parking reservation?"
-    relevant_doc_ids: ["parking-booking-rules"]
-    reference_answer: "For a short-term reservation, provide your name, surname, car registration number, and desired reservation period to the virtual assistant. The request remains unconfirmed until approved by the administrator."
-    context: "To request a short-term parking reservation, users provide their name, surname, car registration number, and requested reservation period to the virtual assistant."
+  - question: "Which streets have entrances to the underground parking complex?"
+    relevant_doc_ids: ["parking-location"]
+    reference_answer: "The underground parking complex can be accessed from Al. Jana Pawła II, ul. Emilii Plater, and ul. Złota."
+    context: |
+      The underground parking complex can be accessed through entrances and exits located on:
+      - Al. Jana Pawła II
+      - ul. Emilii Plater
+      - ul. Złota
 
   - question: "How do I cancel my reservation?"
     relevant_doc_ids: ["parking-cancellation", "parking-booking-rules"]
