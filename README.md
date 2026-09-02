@@ -148,9 +148,23 @@ graph TD
 
 | Metric | Description |
 |---|---|
-| Recall@K | Did the relevant document appear in top K retrieved results? |
+| Recall@K | What fraction of relevant documents appeared in the top K results? |
 | Precision@K | What fraction of top K results were relevant? |
+| Hit Rate@K | Did at least one relevant document appear in the top K results? |
 | Faithfulness | Is the answer grounded in the retrieved context? |
 | Context Precision | Are the retrieved contexts relevant to the question? |
 | Context Recall | Does the retrieved context cover the ground truth answer? |
 | Latency | End-to-end response time per query |
+
+---
+
+## Future Improvements
+
+### Reranking
+After the initial vector search, add a cross-encoder reranker (e.g. `cross-encoder/ms-marco-MiniLM-L-6-v2`) to re-score the top-K candidates and promote the most relevant documents before passing context to the LLM. This is especially useful when the embedding model retrieves semantically similar but less precise results.
+
+### Hybrid Search
+Combine dense vector search (current) with sparse BM25 keyword search. Hybrid search improves retrieval for queries that contain specific terms (e.g. phone numbers, exact prices) that dense embeddings can underweight.
+
+### Hyperparameter Evaluation
+The current evaluation uses fixed values (`chunk_size=500`, `chunk_overlap=50`, `top_k=5`, `temperature=0.0`). A grid-search evaluation across these parameters would show how each affects retrieval and answer quality metrics. Skipped for now because the dataset is small (10 questions) and current results are already strong — worth revisiting with a larger evaluation set.
