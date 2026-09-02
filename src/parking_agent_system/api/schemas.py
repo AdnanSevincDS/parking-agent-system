@@ -12,18 +12,6 @@ class Intent(str, Enum):
 class ConversationStatus(str, Enum):
     """Current status of a chat conversation"""
     ANSWERED = "answered"
-    COLLECTING_RESERVATION_DETAILS = "collecting_reservation_details"
-    RESERVATION_DETAILS_COMPLETED = "reservation_details_completed"
-    BLOCKED = "blocked"
-    ERROR = "error"
-
-class ReservationField(str, Enum):
-    """"Reservation details that may be collected from the user"""
-    NAME = "name"
-    SURNAME = "surname"
-    CAR_NUMBER = "car_number"
-    RESERVATION_START = "reservation_start"
-    RESERVATION_END = "reservation_end"
 
 class HealthResponse(BaseModel):
     """Safe health-check response for the backend"""
@@ -67,7 +55,4 @@ class ChatResponse(BaseModel):
     intent: Intent
     conversation_status: ConversationStatus
 
-    next_required_field: ReservationField | None = None
-
-    collected_fields: list[ReservationField] = Field(default_factory=list)
     sources: list[SourceReference] = Field(default_factory=list)
