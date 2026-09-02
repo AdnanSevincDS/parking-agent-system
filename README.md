@@ -1,15 +1,22 @@
 # Parking Agent System
 
-A RAG-based parking assistant chatbot that answers questions about parking information and handles reservation requests.
+A RAG-based parking assistant chatbot that answers questions about parking information, handles reservation requests, and routes them to a human administrator for approval.
 
 ---
 
 ## Architecture
 
 ```
-User → Streamlit UI → FastAPI → LangChain Agent (MemorySaver)
+User → Streamlit UI → FastAPI → Agent 1: ParkingChatAgent (MemorySaver)
                                       ├── get_parking_information → Milvus (static data)
-                                      └── make_parking_reservation → SQLite (reservations)
+                                      ├── make_parking_reservation → SQLite (pending_approval)
+                                      └── escalate_to_admin → queues for human review
+
+Admin → POST /admin/chat → Agent 2: AdminAgent (MemorySaver)
+                                      ├── approve_reservation → SQLite (approved)
+                                      └── refuse_reservation  → SQLite (refused)
+
+Admin → GET /admin/reservations → list all pending reservations
 
 Input  → GuardRails (DeBERTa injection check + Presidio PII scrub)
 Output → GuardRails (Presidio PII filter)
@@ -30,8 +37,13 @@ parking_agent_system/
 │   ├── setup.py                     # One-time DB + vector store init
 │   └── evaluate.py                  # RAG evaluation script
 ├── src/parking_agent_system/
-│   ├── agents/user_agent.py         # LangChain agent with MemorySaver
-│   ├── api/                         # FastAPI routes and schemas
+│   ├── agents/
+│   │   ├── user_agent.py            # Agent 1: chat + reservation + escalation
+│   │   └── admin_agent.py           # Agent 2: approve/refuse via admin API
+│   ├── api/
+│   │   ├── routes_chat.py           # POST /chat (user-facing)
+│   │   ├── routes_admin.py          # GET /admin/reservations, POST /admin/chat
+│   │   └── schemas.py               # Pydantic request/response models
 │   ├── config.py                    # Environment settings
 │   ├── config_rag.py                # RAG tuning parameters
 │   ├── data_layer/
@@ -44,7 +56,10 @@ parking_agent_system/
 │   ├── telemetry.py                 # Phoenix tracing setup
 │   └── tools/
 │       ├── parking_info.py          # RAG retrieval tool
-│       └── reservation.py           # Reservation booking tool
+│       ├── reservation.py           # Reservation booking tool
+│       ├── escalate_to_admin.py     # Queues reservation for human admin review
+│       ├── approve_reservation.py   # Sets reservation status to approved
+│       └── refuse_reservation.py    # Sets reservation status to refused
 ├── tests/                           # pytest test suite
 └── main.py                          # FastAPI app entry point
 ```
@@ -59,9 +74,8 @@ parking_agent_system/
 - [Ollama](https://ollama.ai) running locally with models pulled:
 
 ```bash
-ollama pull qwen2.5:7b          # chat model + RAGAS judge
+ollama pull qwen2.5:7b          # chat model (Agent 1 + Agent) + RAGAS judge
 ollama pull nomic-embed-text    # embeddings
-```
 ```
 
 ### Installation
@@ -93,6 +107,38 @@ uv run uvicorn main:app --reload
 ### Start the frontend
 ```bash
 uv run streamlit run frontend/app.py
+```
+
+---
+
+## Human-in-the-Loop Flow (Stage 2)
+
+Agent 1 (user-facing) collects reservation details from the user and submits them to SQLite with status `pending_approval`. It then calls `escalate_to_admin` to notify the user that their booking is pending review.
+
+Agent 2 (AdminAgent) sits behind the admin API. The human admin interacts with it via `POST /admin/chat`. The admin can type natural language decisions such as:
+
+> "approve reservation ed7757ae-b834-481f-9a61-93060ce97460"
+> "refuse reservation ed7757ae-b834-481f-9a61-93060ce97460"
+
+AdminAgent uses its tools to update the reservation status in SQLite accordingly.
+
+### Admin API endpoints
+
+| Method | Endpoint | Description |
+|---|---|---|
+| `GET` | `/admin/reservations` | List all reservations pending approval |
+| `POST` | `/admin/chat` | Send a decision message to AdminAgent |
+
+**Example — list pending reservations:**
+```bash
+curl http://localhost:8000/admin/reservations
+```
+
+**Example — approve a reservation:**
+```bash
+curl -X POST http://localhost:8000/admin/chat \
+  -H "Content-Type: application/json" \
+  -d '{"message": "approve reservation ed7757ae-b834-481f-9a61-93060ce97460"}'
 ```
 
 ---
@@ -150,15 +196,23 @@ uv run pytest tests/
 
 ```mermaid
 graph TD
-    A[User Question] --> B[GuardRails: injection check + PII scrub]
-    B --> C[LangChain Agent]
-    C --> D[Query Rewriter LLM]
+    A[User Message] --> B[GuardRails: injection check + PII scrub]
+    B --> C[Agent 1: ParkingChatAgent]
+    C --> D[get_parking_information]
     D --> E[Milvus Vector Search]
     E --> F[Retrieved Context]
     F --> C
-    C --> G[Qwen2.5 LLM]
-    G --> H[GuardRails: PII filter]
-    H --> I[Answer]
+    C --> G[make_parking_reservation]
+    G --> H[SQLite: pending_approval]
+    H --> I[escalate_to_admin]
+    I --> J[Agent 1 reply to user]
+    J --> K[GuardRails: PII filter]
+
+    L[Human Admin] --> M[GET /admin/reservations]
+    L --> N[POST /admin/chat]
+    N --> O[Agent 2: AdminAgent]
+    O --> P[approve_reservation or refuse_reservation]
+    P --> Q[SQLite: approved / refused]
 ```
 
 ## Data Model
