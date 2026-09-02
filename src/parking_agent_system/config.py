@@ -10,7 +10,7 @@ PROMPTS_DIR = PROJECT_ROOT / "src" / "parking_agent_system" / "prompt-templates"
 
 
 class Settings(BaseSettings):
-    """Application configuration loaded from environment variables and .env."""
+    """Application configuration — defaults work out of the box. Override via environment variables or a .env file if needed."""
 
     environment: str = Field(
         default="development",
@@ -36,12 +36,6 @@ class Settings(BaseSettings):
     model: str = Field(
         default="qwen2.5:7b",
         validation_alias="LLM",
-    )
-    
-    parking_capacity: int = Field(
-        default=20,
-        gt=0,
-        validation_alias="PARKING_CAPACITY",
     )
 
     system_prompt_path: Path = Field(
