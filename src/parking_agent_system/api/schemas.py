@@ -57,9 +57,14 @@ class ChatResponse(BaseModel):
 
     sources: list[SourceReference] = Field(default_factory=list)
 
+class ReservationStatus(str, Enum):
+    """Current status of a reservation request"""
+    APPROVED = "approved"
+    REFUSED = "refused"
+
 class AdminChatRequest(BaseModel):
     reservation_id: UUID
-    message: str
+    message: ReservationStatus
 
 class AdminChatResponse(BaseModel):
     reservation_id: UUID
