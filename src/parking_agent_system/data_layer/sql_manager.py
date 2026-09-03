@@ -7,7 +7,6 @@ from uuid import UUID, uuid4
 from parking_agent_system.config import settings
 
 PENDING_APPROVAL_STATUS = "pending_approval"
-ALLOWED_STATUSES = {"approved", "refused"}
 
 class ParkingDatabase:
     """Manage SQLite storage for parking reservation requests."""
@@ -133,8 +132,6 @@ class ParkingDatabase:
         """
         Update the status of a reservation request. Returns True if the update was successful, False if the reservation_id does not exist.
         """
-        if status not in ALLOWED_STATUSES:
-            raise ValueError(f"Invalid status: {status}. Allowed statuses are: {ALLOWED_STATUSES}")
         with self._connect() as connection:
             cursor = connection.execute(
                 """
