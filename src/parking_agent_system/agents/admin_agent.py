@@ -36,9 +36,9 @@ class AdminAgent:
             system_prompt=ADMIN_SYSTEM_PROMPT,
         )
 
-    def run(self, message: str, conversation_id: UUID) -> tuple[str, list[Document]]:
+    def run(self, message: str, reservation_id: UUID) -> tuple[str, list[Document]]:
         result = self._agent.invoke(
             {"messages" : [HumanMessage(content=message)]},
-            config={"configurable": {"thread_id": str(conversation_id)}}
+            config={"configurable": {"thread_id": str(reservation_id)}}
         )
         return result["messages"][-1].content, []
