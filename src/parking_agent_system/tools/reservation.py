@@ -1,4 +1,4 @@
-import dateparser
+from datetime import datetime
 from uuid import UUID
 
 from langchain_core.runnables import RunnableConfig
@@ -28,15 +28,15 @@ def build_reservation_tool():
         config: RunnableConfig,
     ) -> str:
         """
-        Book a parking spot. Collect the user's name, surname, car number (format: AB 1234 CD),
-        start datetime, and end datetime through conversation before calling this tool.
-        Only call when you have ALL five fields confirmed by the user.
+        Book a parking spot. Only call this tool when the user has submitted the reservation form
+        from the sidebar with all five fields: name, surname, car number, start datetime and end datetime.
+        Do not collect fields through conversation — direct the user to the sidebar form instead.
         """
         # Parse the start and end datetime strings into datetime objects
-        start = dateparser.parse(reservation_start, settings={"PREFER_DATES_FROM": "future"})
-        end = dateparser.parse(reservation_end, settings={"PREFER_DATES_FROM": "future"})
-
-        if not start or not end:
+        try:
+            start = datetime.strptime(reservation_start, "%d-%m-%Y %H:%M")
+            end = datetime.strptime(reservation_end, "%d-%m-%Y %H:%M")
+        except ValueError:
             return "Could not parse the dates. Please use format: 20-09-2026 10:00."
 
         try:
