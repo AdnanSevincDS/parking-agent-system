@@ -56,7 +56,7 @@ def validate_reservation_period(
     reservation_end: datetime,
 ) -> tuple[datetime, datetime]:
     """Validate a future reservation period using local parking time."""
-    if reservation_start <= datetime.now():
+    if reservation_start.date() < datetime.now().date():
         raise ValueError("Reservation start time must be in the future.")
 
     if reservation_end <= reservation_start:
