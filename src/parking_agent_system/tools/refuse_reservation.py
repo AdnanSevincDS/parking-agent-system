@@ -12,7 +12,8 @@ def build_refuse_reservation_tool():
         """
         Updates the reservation status to 'refused' for the given reservation ID.
         """
-        if db.update_reservation_status(reservation_id, "refused"):
+        updated = db.update_reservation_status(UUID(reservation_id), "refused")
+        if updated:
             return f"Reservation {reservation_id} has been refused."
         else:
             return f"Reservation {reservation_id} could not be found."

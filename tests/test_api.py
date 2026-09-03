@@ -65,7 +65,7 @@ def test_chat_rejects_blank_messages(message: str) -> None:
     assert response.status_code == 422
 
 class FakeAdminAgent:
-    def run(self, message: str, conversation_id: UUID) -> tuple[str, list]:
+    def run(self, message: str, reservation_id: UUID) -> tuple[str, list]:
         return "Reservation approved", []
 
 
@@ -103,12 +103,12 @@ def test_admin_chat_returns_response(monkeypatch: pytest.MonkeyPatch) -> None:
     response = client.post(
         "/admin/chat",
         json={
-            "conversation_id": "b45470ef-b252-49f0-99ba-29cc745624c0",
-            "message": "Approve the reservation.",
+            "reservation_id": "b45470ef-b252-49f0-99ba-29cc745624c0",
+            "message": "approve",
         }
     )
 
     assert response.status_code == 200
     body = response.json()
     assert body["message"] == "Reservation approved"
-    assert body["conversation_id"] == "b45470ef-b252-49f0-99ba-29cc745624c0"
+    assert body["reservation_id"] == "b45470ef-b252-49f0-99ba-29cc745624c0"

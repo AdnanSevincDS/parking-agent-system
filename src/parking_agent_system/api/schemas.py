@@ -58,11 +58,11 @@ class ChatResponse(BaseModel):
     sources: list[SourceReference] = Field(default_factory=list)
 
 class AdminChatRequest(BaseModel):
-    conversation_id: UUID = Field(default_factory=uuid4)
+    reservation_id: UUID
     message: str
 
 class AdminChatResponse(BaseModel):
-    conversation_id: UUID
+    reservation_id: UUID
     message: str
 
 class PendingReservation(BaseModel):
