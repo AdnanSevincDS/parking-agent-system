@@ -92,6 +92,7 @@ def test_get_pending_reservation(monkeypatch: pytest.MonkeyPatch, tmp_path) -> N
     body = response.json()
     assert body["total"] == 1
     assert body["reservations"][0]["customer_name"] == "Test User"
+    assert body["reservations"][0]["customer_surname"] == "Test Surname"
     assert body["reservations"][0]["status"] == "pending_approval"
     assert body["reservations"][0]["car_number"] == "ABC123"
 
