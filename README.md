@@ -4,6 +4,12 @@ A RAG-based parking assistant chatbot that answers questions about parking infor
 
 ---
 
+## Submission Guide for Assessors
+
+This project is built incrementally across stages. Errors and logic were refined progressively — some fixes introduced in a later stage also improved earlier stage code. For the corrected and complete code across all stages, please refer to the **`main` branch**.
+
+---
+
 ## Architecture
 
 ```
@@ -115,10 +121,7 @@ uv run streamlit run frontend/app.py
 
 Agent 1 (user-facing) collects reservation details from the user and submits them to SQLite with status `pending_approval`. It then calls `escalate_to_admin` to notify the user that their booking is pending review.
 
-Agent 2 (AdminAgent) sits behind the admin API. The human admin interacts with it via `POST /admin/chat`. The admin can type natural language decisions such as:
-
-> "approve reservation ed7757ae-b834-481f-9a61-93060ce97460"
-> "refuse reservation ed7757ae-b834-481f-9a61-93060ce97460"
+Agent 2 (AdminAgent) sits behind the admin API. The human admin interacts with it via `POST /admin/chat`, sending the `reservation_id` (obtained from `GET /admin/reservations`) and a decision of `"approved"` or `"refused"`. The `reservation_id` is passed as the LangGraph thread ID so the agent's tools can look it up without the LLM needing to extract a UUID from the message.
 
 AdminAgent uses its tools to update the reservation status in SQLite accordingly.
 
@@ -138,7 +141,14 @@ curl http://localhost:8000/admin/reservations
 ```bash
 curl -X POST http://localhost:8000/admin/chat \
   -H "Content-Type: application/json" \
-  -d '{"message": "approve reservation ed7757ae-b834-481f-9a61-93060ce97460"}'
+  -d '{"reservation_id": "ed7757ae-b834-481f-9a61-93060ce97460", "message": "approved"}'
+```
+
+**Example — refuse a reservation:**
+```bash
+curl -X POST http://localhost:8000/admin/chat \
+  -H "Content-Type: application/json" \
+  -d '{"reservation_id": "ed7757ae-b834-481f-9a61-93060ce97460", "message": "refused"}'
 ```
 
 ---
