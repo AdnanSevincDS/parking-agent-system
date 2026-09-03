@@ -29,7 +29,7 @@ def get_pending_reservations():
 def admin_chat(request: AdminChatRequest) -> AdminChatResponse:
     """Admin sends a decision message to Admin Agent regarding a pending reservation."""
     try:
-        message, _ = admin_agent.run(request.message, request.reservation_id)
+        message, _ = admin_agent.run(request.message.value, request.reservation_id)
     except Exception as error:
         logger.exception("admin chat handler failed")
         raise HTTPException(
