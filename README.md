@@ -20,12 +20,64 @@ User → Streamlit UI → FastAPI → Agent 1: ParkingChatAgent (MemorySaver)
 
 Admin → POST /admin/chat → Agent 2: AdminAgent (MemorySaver)
                                       ├── approve_reservation → SQLite (approved)
+                                      │     └── write_confirmed_reservation → MCP Server
+                                      │                                          └── confirmed_reservations.txt
                                       └── refuse_reservation  → SQLite (refused)
 
 Admin → GET /admin/reservations → list all pending reservations
 
 Input  → GuardRails (DeBERTa injection check + Presidio PII scrub)
 Output → GuardRails (Presidio PII filter)
+
+MCP Server (port 8001) → standalone process, exposes write_confirmed_reservation tool
+```
+
+## End-to-End Flow
+
+```
+STARTUP
+───────
+MCP server starts on port 8001 (separate process)
+FastAPI starts — AdminAgent is initialised lazily on the first POST /admin/chat
+  → build_admin_agent() connects to MCP server
+  → fetches write_confirmed_reservation tool schema
+  → creates AdminAgent with [approve, refuse, write_confirmed_reservation] tools
+
+
+USER FLOW
+─────────
+User fills sidebar form → Streamlit sends POST /chat
+  → UserAgent calls make_parking_reservation tool
+      → saves to SQLite (status: pending_approval)
+      → returns reservation_id
+  → UserAgent calls escalate_to_admin(reservation_id)
+      → returns "pending admin review" message
+  → User sees: "Your booking is pending admin approval"
+
+
+ADMIN FLOW
+──────────
+Admin sends GET /admin/reservations
+  → sees all pending reservations with their UUIDs
+
+Admin picks one, sends POST /admin/chat
+  {"reservation_id": "uuid-A", "message": "approved"}
+
+  → routes_admin.py calls _admin_agent.run("approved", uuid-A)
+  → LangGraph sets thread_id = "uuid-A"
+
+  IF approved:
+    → agent calls approve_reservation tool
+        → updates SQLite status to "approved"
+    → agent calls write_confirmed_reservation(uuid-A) via MCP
+        → MCP server queries SQLite for full details
+        → appends to data/confirmed_reservations.txt:
+          "John Smith | WA 1234 AB | 04-09-2026 10:00 to 04-09-2026 12:00 | 04-09-2026 14:35"
+
+  IF refused:
+    → agent calls refuse_reservation tool
+        → updates SQLite status to "refused"
+    → write_confirmed_reservation is NOT called
 ```
 
 ## Project Structure
@@ -66,6 +118,8 @@ parking_agent_system/
 │       ├── escalate_to_admin.py     # Queues reservation for human admin review
 │       ├── approve_reservation.py   # Sets reservation status to approved
 │       └── refuse_reservation.py    # Sets reservation status to refused
+├── mcp_server/
+│   └── server.py                    # MCP server — writes confirmed reservations to file
 ├── tests/                           # pytest test suite
 └── main.py                          # FastAPI app entry point
 ```
@@ -104,6 +158,11 @@ uv run python scripts/setup.py
 uv run python -m phoenix.server.main serve
 ```
 Open `http://localhost:6006` to view traces.
+
+### Start the MCP server
+```bash
+uv run python mcp_server/server.py
+```
 
 ### Start the API server
 ```bash

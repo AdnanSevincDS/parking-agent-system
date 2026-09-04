@@ -63,6 +63,11 @@ class Settings(BaseSettings):
         validation_alias="ADMIN_SYSTEM_PROMPT_PATH",
     )
 
+    mcp_server_url: str = Field(
+        default="http://localhost:8001/sse",
+        validation_alias="MCP_SERVER_URL",
+    )
+
     @field_validator("sqlite_db_path", "milvus_db_path", mode="before")
     @classmethod
     def resolve_project_relative_paths(cls, value: str | Path) -> Path:

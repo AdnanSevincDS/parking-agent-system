@@ -12,7 +12,7 @@ from parking_agent_system.api.schemas import (
 logger = logging.getLogger(__name__)
 
 router  = APIRouter(prefix="/admin", tags=["admin"])
-admin_agent = AdminAgent()
+admin_agent: AdminAgent | None = None
 db = ParkingDatabase()
 
 @router.get("/reservations", response_model=PendingReservationsResponse)
@@ -26,10 +26,10 @@ def get_pending_reservations():
 
 
 @router.post("/chat", response_model=AdminChatResponse)
-def admin_chat(request: AdminChatRequest) -> AdminChatResponse:
+async def admin_chat(request: AdminChatRequest) -> AdminChatResponse:
     """Admin sends a decision message to Admin Agent regarding a pending reservation."""
     try:
-        message, _ = admin_agent.run(request.message.value, request.reservation_id)
+        message, _ = await admin_agent.run(request.message.value, request.reservation_id)
     except Exception as error:
         logger.exception("admin chat handler failed")
         raise HTTPException(
