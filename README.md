@@ -13,23 +13,27 @@ This project is built incrementally across stages. Errors and logic were refined
 ## Architecture
 
 ```
-User → Streamlit UI → FastAPI → Agent 1: ParkingChatAgent (MemorySaver)
-                                      ├── get_parking_information → Milvus (static data)
-                                      ├── make_parking_reservation → SQLite (pending_approval)
-                                      └── escalate_to_admin → queues for human review
-
-Admin → POST /admin/chat → Agent 2: AdminAgent (MemorySaver)
-                                      ├── approve_reservation → SQLite (approved)
-                                      │     └── write_confirmed_reservation → MCP Server
-                                      │                                          └── confirmed_reservations.txt
-                                      └── refuse_reservation  → SQLite (refused)
+User → Streamlit UI → FastAPI → LangGraph orchestration (SqliteSaver)
+                                    ├── user_interaction node
+                                    │       └── ParkingChatAgent (MemorySaver)
+                                    │               ├── get_parking_information → Milvus (static data)
+                                    │               ├── make_parking_reservation → SQLite (pending_approval)
+                                    │               └── escalate_to_admin → queues for human review
+                                    │
+                                    ├── wait_for_admin node  ← INTERRUPT (human-in-the-loop)
+                                    │
+                                    ├── admin_approval node
+                                    │       ├── approve_reservation → SQLite (approved)
+                                    │       └── refuse_reservation  → SQLite (refused)
+                                    │
+                                    └── write_confirmation node
+                                            └── MCP Server (port 8001)
+                                                    └── confirmed_reservations.txt
 
 Admin → GET /admin/reservations → list all pending reservations
 
 Input  → GuardRails (DeBERTa injection check + Presidio PII scrub)
 Output → GuardRails (Presidio PII filter)
-
-MCP Server (port 8001) → standalone process, exposes write_confirmed_reservation tool
 ```
 
 ## End-to-End Flow
@@ -38,21 +42,19 @@ MCP Server (port 8001) → standalone process, exposes write_confirmed_reservati
 STARTUP
 ───────
 MCP server starts on port 8001 (separate process)
-FastAPI starts — AdminAgent is initialised lazily on the first POST /admin/chat
-  → build_admin_agent() connects to MCP server
-  → fetches write_confirmed_reservation tool schema
-  → creates AdminAgent with [approve, refuse, write_confirmed_reservation] tools
+FastAPI starts — api_graph (LangGraph + SqliteSaver) is ready at module load
 
 
 USER FLOW
 ─────────
 User fills sidebar form → Streamlit sends POST /chat
-  → UserAgent calls make_parking_reservation tool
-      → saves to SQLite (status: pending_approval)
-      → returns reservation_id
-  → UserAgent calls escalate_to_admin(reservation_id)
-      → returns "pending admin review" message
-  → User sees: "Your booking is pending admin approval"
+  → LangGraph runs user_interaction node
+      → ParkingChatAgent calls make_parking_reservation tool
+          → saves to SQLite (status: pending_approval)
+      → ParkingChatAgent calls escalate_to_admin
+      → graph checks SQLite: reservation found for this conversation_id
+      → graph routes to wait_for_admin node → INTERRUPT (state persisted in SqliteSaver)
+  → User sees: "Your reservation is pending admin approval"
 
 
 ADMIN FLOW
@@ -63,21 +65,22 @@ Admin sends GET /admin/reservations
 Admin picks one, sends POST /admin/chat
   {"reservation_id": "uuid-A", "message": "approved"}
 
-  → routes_admin.py calls _admin_agent.run("approved", uuid-A)
-  → LangGraph sets thread_id = "uuid-A"
+  → routes_admin.py looks up conversation_id from reservation_id in SQLite
+  → resumes graph via Command(resume="approved"), thread_id = conversation_id
 
   IF approved:
-    → agent calls approve_reservation tool
+    → admin_approval node calls approve_reservation tool
         → updates SQLite status to "approved"
-    → agent calls write_confirmed_reservation(uuid-A) via MCP
-        → MCP server queries SQLite for full details
-        → appends to data/confirmed_reservations.txt:
-          "John Smith | WA 1234 AB | 04-09-2026 10:00 to 04-09-2026 12:00 | 04-09-2026 14:35"
+    → graph routes to write_confirmation node
+        → calls MCP server write_confirmed_reservation(uuid-A)
+            → MCP server queries SQLite for full details
+            → appends to data/confirmed_reservations.txt:
+              "John Smith | WA 1234 AB | 04-09-2026 10:00 to 04-09-2026 12:00 | 04-09-2026 14:35"
 
   IF refused:
-    → agent calls refuse_reservation tool
+    → admin_approval node calls refuse_reservation tool
         → updates SQLite status to "refused"
-    → write_confirmed_reservation is NOT called
+    → graph routes to END (write_confirmation is skipped)
 ```
 
 ## Project Structure
@@ -103,6 +106,8 @@ parking_agent_system/
 │   │   ├── routes_admin.py          # GET /admin/reservations, POST /admin/chat
 │   │   └── schemas.py               # Pydantic request/response models
 │   ├── config.py                    # All environment settings incl. RAG tuning
+│   ├── graph/
+│   │   └── orchestration.py         # LangGraph pipeline: user → interrupt → approval → write
 │   ├── data_layer/
 │   │   ├── sql_manager.py           # SQLite reservation storage
 │   │   └── vector_manager.py        # Milvus vector store
@@ -190,13 +195,13 @@ To test the full pipeline in Studio:
 
 ---
 
-## Human-in-the-Loop Flow (Stage 2)
+## Human-in-the-Loop Flow
 
-Agent 1 (user-facing) collects reservation details from the user and submits them to SQLite with status `pending_approval`. It then calls `escalate_to_admin` to notify the user that their booking is pending review.
+The entire pipeline runs as a single LangGraph `StateGraph` with a `SqliteSaver` checkpointer so state survives across the two separate HTTP requests (user → admin).
 
-Agent 2 (AdminAgent) sits behind the admin API. The human admin interacts with it via `POST /admin/chat`, sending the `reservation_id` (obtained from `GET /admin/reservations`) and a decision of `"approved"` or `"refused"`. The `reservation_id` is passed as the LangGraph thread ID so the agent's tools can look it up without the LLM needing to extract a UUID from the message.
+`user_interaction` node runs `ParkingChatAgent`. If a reservation is detected in SQLite for this `conversation_id`, the graph routes to `wait_for_admin` and calls `interrupt()` — execution pauses and state is persisted.
 
-AdminAgent uses its tools to update the reservation status in SQLite accordingly.
+When the admin sends `POST /admin/chat`, the route looks up the `conversation_id` from the `reservation_id` in SQLite and resumes the graph via `Command(resume=decision)`. The `admin_approval` node runs the appropriate tool, then routing decides whether to call the `write_confirmation` node (approved) or end (refused).
 
 ### Admin API endpoints
 
