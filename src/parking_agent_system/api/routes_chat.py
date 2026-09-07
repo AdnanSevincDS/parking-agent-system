@@ -39,6 +39,7 @@ def chat(request: ChatRequest) -> ChatResponse:
     if snapshot.next and "wait_for_admin" in snapshot.next:
         return ChatResponse(
             conversation_id=request.conversation_id,
+            reservation_id=snapshot.values.get("reservation_id"),
             message="Your reservation is pending admin approval.",
             intent=Intent.RESERVATION,
             conversation_status=ConversationStatus.ANSWERED,
@@ -79,7 +80,8 @@ def chat(request: ChatRequest) -> ChatResponse:
             source_refs.append(SourceReference(document_id=doc_id, title=title))
     
     return ChatResponse(
-        conversation_id =request.conversation_id,
+        conversation_id=request.conversation_id,
+        reservation_id=result.get("reservation_id"),
         message=safe_message,
         intent=Intent.INFORMATION,
         conversation_status=ConversationStatus.ANSWERED,
