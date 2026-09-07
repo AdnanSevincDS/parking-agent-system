@@ -29,3 +29,6 @@ data/*.sqlite
 src/parking_agent_system/analyze.ipynb
 
 adnan_workspace/
+
+# LangGraph build and runtime artifacts
+.langgraph_api/
