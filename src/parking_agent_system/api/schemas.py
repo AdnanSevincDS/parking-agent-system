@@ -50,6 +50,7 @@ class ChatResponse(BaseModel):
     """Safe response returned by the chat endpoint"""
     conversation_id: UUID
     request_id: UUID = Field(default_factory=uuid4)
+    reservation_id: UUID | None = None
 
     message: str
     intent: Intent
