@@ -14,10 +14,9 @@ from langgraph.types import interrupt
 from parking_agent_system.config import settings
 from parking_agent_system.data_layer.sql_manager import ParkingDatabase
 
-#<for_langsmith>
+# Load .env variables for LangSmith tracing (LANGSMITH_API_KEY, LANGSMITH_PROJECT)
 from dotenv import load_dotenv
 load_dotenv()
-#</for_langsmith>
 
 class PipelineState(TypedDict):
     messages: Annotated[list[BaseMessage], add_messages]
@@ -134,3 +133,7 @@ def build_pipeline_graph(checkpointer=None):
 
 
 orchestration_graph = build_pipeline_graph()
+
+# FastAPI — SqliteSaver keeps interrupt state alive between user and admin requests
+_conn = sqlite3.connect(str(settings.sqlite_db_path), check_same_thread=False)
+api_graph = build_pipeline_graph(checkpointer=SqliteSaver(_conn))

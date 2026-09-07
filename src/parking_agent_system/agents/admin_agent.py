@@ -9,7 +9,6 @@ from langgraph.checkpoint.memory import MemorySaver
 from langchain.agents import create_agent
 
 from parking_agent_system.config import settings
-from parking_agent_system.config_rag import rag_config
 from parking_agent_system.tools.approve_reservation import build_approve_reservation_tool
 from parking_agent_system.tools.refuse_reservation import build_refuse_reservation_tool
 
@@ -21,7 +20,7 @@ class AdminAgent:
         self._llm = ChatOllama(
             model=settings.model,
             base_url=settings.ollama_base_url,
-            temperature=rag_config.temperature,
+            temperature=settings.temperature,
             num_ctx=settings.llm_context_window,
             num_predict=settings.llm_max_output_tokens,
         )
