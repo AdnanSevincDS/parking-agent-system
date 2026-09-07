@@ -20,6 +20,7 @@ mainTest.py
 
 data/*.db
 data/*.sqlite
+data/confirmed_reservations.txt
 
 
 .vscode/
