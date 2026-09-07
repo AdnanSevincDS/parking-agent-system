@@ -33,3 +33,5 @@ adnan_workspace/
 
 # LangGraph build and runtime artifacts
 .langgraph_api/
+
+data/confirmed_reservations.txt
