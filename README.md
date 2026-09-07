@@ -174,6 +174,21 @@ uv run uvicorn main:app --reload
 uv run streamlit run frontend/app.py
 ```
 
+### Visualise the graph (LangGraph Studio)
+```bash
+uv run langgraph dev
+```
+Opens LangGraph Studio at `http://localhost:2024`.
+
+> **Note:** Start the MCP server before running LangGraph Studio, otherwise `write_confirmation` node will fail with a connection error.
+
+> **Note:** LangGraph Studio manages its own persistence — the custom `SqliteSaver` checkpointer is only used when running via FastAPI (`api_graph`). The `orchestration_graph` exported for Studio has no checkpointer.
+
+To test the full pipeline in Studio:
+1. Send a message with only `Messages` field — `conversation_id` is auto-generated
+2. To make a reservation, fill in the sidebar form in Streamlit and submit, or send reservation details directly as a message
+3. When the graph pauses at `wait_for_admin`, use the **Interrupts** panel to resume with `approved` or `refused`
+
 ---
 
 ## Human-in-the-Loop Flow (Stage 2)
