@@ -1,25 +1,15 @@
 from uuid import UUID, uuid4
 from datetime import datetime, timedelta
+from unittest.mock import MagicMock
 
 import pytest
 from fastapi.testclient import TestClient
 from langchain_core.documents import Document
+from langchain_core.messages import AIMessage
 
 from main import app
 from parking_agent_system.api import routes_chat, routes_admin
 from parking_agent_system.data_layer.sql_manager import ParkingDatabase
-
-class FakeAgent:
-    def run(self, message: str, conversation_id: UUID) -> tuple[str, list[Document]]:
-        doc = Document(
-            page_content="The parking facility operates 24 hours a day.",
-            metadata={
-                "document_id": "parking-hours",
-                "title": "Operating Hours",
-            },
-        )
-        return "The parking facility operates 24 hours a day.", [doc]
-
 
 client = TestClient(app)
 
@@ -34,8 +24,18 @@ def test_health_endpoint() -> None:
     }
 
 def test_chat_returns_safe_source(monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.setattr(routes_chat, "agent", FakeAgent())
-
+    mock_graph = MagicMock()
+    mock_graph.get_state.return_value = MagicMock(next=[])
+    mock_graph.invoke.return_value = {
+            "messages": [AIMessage(content="The parking facility operates 24 hours a day.")],
+            "sources": [Document(
+                page_content="The parking facility operates 24 hours a day.",
+                metadata={"document_id": "parking-hours", "title": "Operating Hours"},
+            )],
+        }
+        
+    monkeypatch.setattr(routes_chat, "api_graph", mock_graph)
+    
     response = client.post(
         "/chat",
         json={
@@ -63,11 +63,6 @@ def test_chat_rejects_blank_messages(message: str) -> None:
     )
 
     assert response.status_code == 422
-
-class FakeAdminAgent:
-    async def run(self, message: str, reservation_id: UUID) -> tuple[str, list]:
-        return "Reservation approved", []
-
 
 def test_get_pending_reservation(monkeypatch: pytest.MonkeyPatch, tmp_path) -> None:
     db = ParkingDatabase(data_base_path=tmp_path / "test.db")
@@ -98,7 +93,18 @@ def test_get_pending_reservation(monkeypatch: pytest.MonkeyPatch, tmp_path) -> N
 
 
 def test_admin_chat_returns_response(monkeypatch: pytest.MonkeyPatch) -> None:
-    monkeypatch.setattr(routes_admin, "admin_agent", FakeAdminAgent())
+    mock_db = MagicMock()
+    mock_db.get_reservation.return_value = {
+            "reservation_id": "b45470ef-b252-49f0-99ba-29cc745624c0",
+            "conversation_id": "b45470ef-b252-49f0-99ba-29cc745624c0",
+        }
+
+    mock_graph = MagicMock()
+    mock_graph.invoke.return_value = {
+        "messages": [AIMessage(content="Reservation approved")],
+    }
+    monkeypatch.setattr(routes_admin, "db", mock_db)
+    monkeypatch.setattr(routes_admin, "api_graph", mock_graph)
 
     response = client.post(
         "/admin/chat",
