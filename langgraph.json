@@ -1,0 +1,7 @@
+{
+  "dependencies": ["."],
+  "graphs": {
+    "parking_pipeline": "./graph/orchestration.py:orchestration_graph"
+  },
+  "env": ".env"
+}
