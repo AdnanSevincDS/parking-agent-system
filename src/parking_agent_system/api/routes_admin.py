@@ -1,7 +1,7 @@
 import logging
 from fastapi import APIRouter, HTTPException, status
-from parking_agent_system.agents.admin_agent import AdminAgent
-from parking_agent_system.data_layer.sql_manager import ParkingDatabase
+from langgraph.types import Command
+
 from parking_agent_system.api.schemas import (
     AdminChatRequest,
     AdminChatResponse,
@@ -9,10 +9,11 @@ from parking_agent_system.api.schemas import (
     PendingReservationsResponse,
 )
 
-logger = logging.getLogger(__name__)
+from parking_agent_system.data_layer.sql_manager import ParkingDatabase
+from parking_agent_system.graph.orchestration import api_graph
 
+logger = logging.getLogger(__name__)
 router  = APIRouter(prefix="/admin", tags=["admin"])
-admin_agent: AdminAgent | None = None
 db = ParkingDatabase()
 
 @router.get("/reservations", response_model=PendingReservationsResponse)
@@ -26,17 +27,31 @@ def get_pending_reservations():
 
 
 @router.post("/chat", response_model=AdminChatResponse)
-async def admin_chat(request: AdminChatRequest) -> AdminChatResponse:
+def admin_chat(request: AdminChatRequest) -> AdminChatResponse:
     """Admin sends a decision message to Admin Agent regarding a pending reservation."""
+    reservation = db.get_reservation(request.reservation_id)
+    if not reservation:
+        raise HTTPException(
+            status_code=404,
+            detail="Reservation not found."
+        )
+
+    config = {"configurable": {"thread_id": reservation["conversation_id"]}}
+
     try:
-        message, _ = await admin_agent.run(request.message.value, request.reservation_id)
+        result = api_graph.invoke(
+            Command(resume=request.message.value),
+            config=config,
+        )
     except Exception as error:
         logger.exception("admin chat handler failed")
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail="The admin agent is temporarily unavailable. Please try again later."
+            detail="The admin agent is temporarily unavailable. Please try again later.",
         ) from error
+    
+    message = result["messages"][-1].content
     return AdminChatResponse(
         reservation_id=request.reservation_id,
-        message=message
+        message=message,
     )
