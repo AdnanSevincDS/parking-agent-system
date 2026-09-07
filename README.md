@@ -102,8 +102,7 @@ parking_agent_system/
 │   │   ├── routes_chat.py           # POST /chat (user-facing)
 │   │   ├── routes_admin.py          # GET /admin/reservations, POST /admin/chat
 │   │   └── schemas.py               # Pydantic request/response models
-│   ├── config.py                    # Environment settings
-│   ├── config_rag.py                # RAG tuning parameters
+│   ├── config.py                    # All environment settings incl. RAG tuning
 │   ├── data_layer/
 │   │   ├── sql_manager.py           # SQLite reservation storage
 │   │   └── vector_manager.py        # Milvus vector store
