@@ -2,14 +2,13 @@ from pathlib import Path
 import yaml
 
 from parking_agent_system.config import settings
-from parking_agent_system.config_rag import rag_config
 
 from langchain_core.documents import Document
 from langchain_milvus import Milvus
 from langchain_ollama import OllamaEmbeddings
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 
-from parking_agent_system.config import DATA_DIR, settings
+from parking_agent_system.config import DATA_DIR
 
 COLLECTION_NAME = "parking_static_info"
 STATIC_INFO_PATH = DATA_DIR / "parking_static_info.yaml"
@@ -21,12 +20,12 @@ class ParkingVectorStore:
     """Manages public static parking knowledge in a Milvus Lite."""
 
     def __init__(self,
-        chunk_size: int = rag_config.chunk_size,
-        chunk_overlap: int = rag_config.chunk_overlap,
-        top_k: int = rag_config.top_k
+        chunk_size: int = settings.chunk_size,
+        chunk_overlap: int = settings.chunk_overlap,
+        top_k: int = settings.top_k
     ):
         self._embeddings = OllamaEmbeddings(
-            model=rag_config.embedding_model,
+            model=settings.embedding_model,
             base_url=settings.ollama_base_url,
         )
         self._text_splitter = RecursiveCharacterTextSplitter(
