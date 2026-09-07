@@ -58,6 +58,28 @@ class Settings(BaseSettings):
         validation_alias="SYSTEM_PROMPT_PATH",
     )
 
+    # RAG tuning
+    embedding_model: str = Field(
+        default="nomic-embed-text:latest",
+        validation_alias="EMBEDDING_MODEL",
+    )
+    temperature: float = Field(
+        default=0.0,
+        validation_alias="TEMPERATURE",
+    )
+    top_k: int = Field(
+        default=3,
+        validation_alias="TOP_K",
+    )
+    chunk_size: int = Field(
+        default=500,
+        validation_alias="CHUNK_SIZE",
+    )
+    chunk_overlap: int = Field(
+        default=50,
+        validation_alias="CHUNK_OVERLAP",
+    )
+
     @field_validator("sqlite_db_path", "milvus_db_path", mode="before")
     @classmethod
     def resolve_project_relative_paths(cls, value: str | Path) -> Path:

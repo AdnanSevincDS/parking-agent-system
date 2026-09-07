@@ -32,8 +32,7 @@ parking_agent_system/
 ├── src/parking_agent_system/
 │   ├── agents/user_agent.py         # LangChain agent with MemorySaver
 │   ├── api/                         # FastAPI routes and schemas
-│   ├── config.py                    # Environment settings
-│   ├── config_rag.py                # RAG tuning parameters
+│   ├── config.py                    # All environment settings incl. RAG tuning
 │   ├── data_layer/
 │   │   ├── sql_manager.py           # SQLite reservation storage
 │   │   └── vector_manager.py        # Milvus vector store

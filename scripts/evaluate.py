@@ -12,7 +12,6 @@ import pandas as pd
 from parking_agent_system.telemetry import setup_phoenix_telemetry
 from parking_agent_system.agents.user_agent import ParkingChatAgent
 from parking_agent_system.config import settings
-from parking_agent_system.config_rag import rag_config
 
 logger = logging.getLogger(__name__)
 
@@ -125,7 +124,7 @@ def run_ragas(results: list[dict]) -> pd.DataFrame:
     )
     ragas_embeddings = LangchainEmbeddingsWrapper(
         OllamaEmbeddings(
-            model=rag_config.embedding_model,
+            model=settings.embedding_model,
             base_url=settings.ollama_base_url,
         )
     )
@@ -151,7 +150,7 @@ def run_ragas(results: list[dict]) -> pd.DataFrame:
 
 
 def print_summary(df: pd.DataFrame) -> None:
-    k = rag_config.top_k
+    k = settings.top_k
     print(f"\n{'=' * 45}")
     print("  RAG Evaluation Summary")
     print(f"{'=' * 45}")
