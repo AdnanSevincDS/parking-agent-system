@@ -104,7 +104,7 @@ def test_admin_chat_returns_response(monkeypatch: pytest.MonkeyPatch) -> None:
         "/admin/chat",
         json={
             "reservation_id": "b45470ef-b252-49f0-99ba-29cc745624c0",
-            "message": "approve",
+            "message": "approved",
         }
     )
 
