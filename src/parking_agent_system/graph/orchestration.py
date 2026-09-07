@@ -104,8 +104,6 @@ def route_after_approval(state: PipelineState) -> str:
     return "write_confirmation" if state.get("decision") == "approved" else "end"
 
 def build_pipeline_graph(checkpointer=None):
-    graph = StateGraph(PipelineState)
-    
     # Graph
     graph = StateGraph(PipelineState)
 
