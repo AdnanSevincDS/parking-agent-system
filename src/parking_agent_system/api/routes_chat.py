@@ -1,8 +1,6 @@
 import logging
-logger = logging.getLogger(__name__)
-
 from fastapi import APIRouter, HTTPException, status
-from parking_agent_system.agents.user_agent import ParkingChatAgent
+from langchain_core.messages import HumanMessage
 from parking_agent_system.api.schemas import (
     ChatRequest,
     ChatResponse,
@@ -11,10 +9,12 @@ from parking_agent_system.api.schemas import (
     Intent,
     SourceReference,
 )
+
+from parking_agent_system.graph.orchestration import api_graph
 from parking_agent_system.guardrails.pii_guard import GuardRails
 
+logger = logging.getLogger(__name__)
 router = APIRouter(tags=["system"])
-agent = ParkingChatAgent()
 guard_rails = GuardRails()
 
 @router.get("/health", response_model=HealthResponse)
@@ -33,20 +33,42 @@ def chat(request: ChatRequest) -> ChatResponse:
             detail=reason or "Your message contains restricted content.",
         )
     scrubbed = guard_rails.scrub_input(request.message)
-
+    config = {"configurable": {"thread_id": str(request.conversation_id)}}
     # 2. Run agent with scrubbed input
+    snapshot = api_graph.get_state(config)
+    if snapshot.next and "wait_for_admin" in snapshot.next:
+        return ChatResponse(
+            conversation_id=request.conversation_id,
+            message="Your reservation is pending admin approval.",
+            intent=Intent.RESERVATION,
+            conversation_status=ConversationStatus.ANSWERED,
+            sources=[],
+        )
+
     try:
-        message, sources = agent.run(scrubbed, request.conversation_id)
+        result = api_graph.invoke(
+            {
+                "messages": [HumanMessage(content=scrubbed)],
+                "conversation_id": str(request.conversation_id),
+                "reservation_id": None,
+                "decision": None,
+                "sources": [],
+            },
+            config=config
+        )
     except Exception as error:
-        logger.exception("chat handler failed")
-        raise HTTPException(
-            status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
-            detail="The parking assistant is temporarily unavailable.",
-        ) from error
-    
+            logger.exception("chat handler failed")
+            raise HTTPException(
+                status_code=status.HTTP_503_SERVICE_UNAVAILABLE,
+                detail="The parking assistant is temporarily unavailable.",
+            ) from error
+
+    message = result["messages"][-1].content
+
     # 3. GuardL filter PII from output before sending to user
     safe_message = guard_rails.filter_pii(message)
-    
+    sources = result.get("sources", [])
+
     source_refs: list[SourceReference] = []
     seen: set[str] = set()
     for doc in sources:
