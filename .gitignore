@@ -19,6 +19,8 @@ mainTest.py
 .streamlit/secrets.toml
 
 data/*.db
+data/*.db-shm
+data/*.db-wal
 data/*.sqlite
 data/confirmed_reservations.txt
 
@@ -33,5 +35,3 @@ adnan_workspace/
 
 # LangGraph build and runtime artifacts
 .langgraph_api/
-
-data/confirmed_reservations.txt
