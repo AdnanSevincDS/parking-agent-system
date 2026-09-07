@@ -1,7 +1,7 @@
 {
   "dependencies": ["."],
   "graphs": {
-    "parking_pipeline": "./graph/orchestration.py:orchestration_graph"
+    "parking_pipeline": "./src/parking_agent_system/graph/orchestration.py:orchestration_graph"
   },
   "env": ".env"
 }
