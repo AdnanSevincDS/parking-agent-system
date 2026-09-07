@@ -3,6 +3,7 @@ logger = logging.getLogger(__name__)
 
 from fastapi import APIRouter, HTTPException, status
 from parking_agent_system.agents.user_agent import ParkingChatAgent
+from parking_agent_system.data_layer.sql_manager import ParkingDatabase
 from parking_agent_system.api.schemas import (
     ChatRequest,
     ChatResponse,
@@ -37,6 +38,15 @@ def chat(request: ChatRequest) -> ChatResponse:
     # 2. Run agent with scrubbed input
     try:
         message, sources = agent.run(scrubbed, request.conversation_id)
+        db = ParkingDatabase()
+        reservation_id = None
+        with db._connect() as conn:
+            row = conn.execute(
+                "SELECT reservation_id FROM reservation_requests WHERE conversation_id = ?",
+                (str(request.conversation_id),),
+            ).fetchone()
+            if row:
+                reservation_id = row["reservation_id"]
     except Exception as error:
         logger.exception("chat handler failed")
         raise HTTPException(
@@ -58,6 +68,7 @@ def chat(request: ChatRequest) -> ChatResponse:
     
     return ChatResponse(
         conversation_id =request.conversation_id,
+        reservation_id=reservation_id,
         message=safe_message,
         intent=Intent.INFORMATION,
         conversation_status=ConversationStatus.ANSWERED,

@@ -74,6 +74,8 @@ for chat_message in st.session_state.messages:
         st.markdown(chat_message["content"])
 
         if chat_message["role"] == "assistant":
+            if chat_message.get("reservation_id"):
+                st.info(f"Reservation ID: `{chat_message['reservation_id']}`")
             display_sources(chat_message.get("sources", []))
 
 chat_input = st.chat_input("Ask a parking question...")
@@ -117,8 +119,11 @@ if user_message:
                 response_data = response.json()
                 answer = response_data["message"]
                 sources = response_data.get("sources", [])
+                reservation_id = response_data.get("reservation_id")
 
                 st.markdown(answer)
+                if reservation_id:
+                    st.info(f"Reservation ID: `{reservation_id}`")
                 display_sources(sources)
 
                 st.session_state.messages.append(
@@ -126,6 +131,7 @@ if user_message:
                         "role": "assistant",
                         "content": answer,
                         "sources": sources,
+                        "reservation_id": reservation_id,
                     }
                 )
             except httpx.HTTPStatusError:
