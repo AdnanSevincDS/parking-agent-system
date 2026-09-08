@@ -35,3 +35,5 @@ adnan_workspace/
 
 # LangGraph build and runtime artifacts
 .langgraph_api/
+
+default.sqlite
