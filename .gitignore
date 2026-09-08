@@ -29,3 +29,5 @@ data/*.sqlite
 src/parking_agent_system/analyze.ipynb
 
 adnan_workspace/
+
+default.sqlite
