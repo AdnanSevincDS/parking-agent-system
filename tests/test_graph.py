@@ -1,4 +1,4 @@
-from unittest.mock import MagicMock
+from unittest.mock import AsyncMock, MagicMock
 from uuid import uuid4
 
 import pytest
@@ -75,20 +75,16 @@ def test_graph_interrupts_on_reservation(interrupted_graph):
 def test_graph_resume_completes(decision, interrupted_graph, monkeypatch):
     graph, config, reservation_id = interrupted_graph
 
-    mock_tool = MagicMock()
-    mock_tool.invoke.return_value = f"Reservation {decision}."
     mock_write = MagicMock(return_value="Written to file.")
 
     import parking_agent_system.graph.orchestration as orchestration_module
 
     monkeypatch.setattr(orchestration_module, "_call_mcp_write", mock_write)
-
-    if decision == "approved":
-        import parking_agent_system.tools.approve_reservation as approve_module
-        monkeypatch.setattr(approve_module, "build_approve_reservation_tool", lambda: mock_tool)
-    else:
-        import parking_agent_system.tools.refuse_reservation as refuse_module
-        monkeypatch.setattr(refuse_module, "build_refuse_reservation_tool", lambda: mock_tool)
+    monkeypatch.setattr(
+        orchestration_module.admin_agent,
+        "run",
+        AsyncMock(return_value=(f"Reservation {decision}.", [])),
+    )
 
     graph.invoke(Command(resume=decision), config=config)
 
