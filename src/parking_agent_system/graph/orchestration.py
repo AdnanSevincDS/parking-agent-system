@@ -26,10 +26,12 @@ class PipelineState(TypedDict):
     sources: NotRequired[list]
 
 
+from parking_agent_system.agents.user_agent import ParkingChatAgent
+agent = ParkingChatAgent()
+
+
 def user_node(state: PipelineState) -> dict:
-    from parking_agent_system.agents.user_agent import ParkingChatAgent
     conversation_id = state.get("conversation_id") or str(uuid4())
-    agent = ParkingChatAgent()
     response, sources = agent.run(
         state["messages"][-1].content,
         UUID(conversation_id),
