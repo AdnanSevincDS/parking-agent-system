@@ -50,11 +50,10 @@ def interrupted_graph(monkeypatch):
         }
     ]
 
-    import parking_agent_system.agents.user_agent as agent_module
     import parking_agent_system.graph.orchestration as orchestration_module
 
     monkeypatch.setattr(orchestration_module, "ParkingDatabase", lambda: mock_db)
-    monkeypatch.setattr(agent_module, "ParkingChatAgent", lambda: mock_agent)
+    monkeypatch.setattr(orchestration_module, "agent", mock_agent)
 
     graph = build_pipeline_graph(checkpointer=MemorySaver())
     config = {"configurable": {"thread_id": conversation_id}}
