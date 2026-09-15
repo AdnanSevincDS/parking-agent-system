@@ -11,6 +11,7 @@ from langchain_mcp_adapters.client import MultiServerMCPClient
 from langgraph.graph.message import add_messages
 from langgraph.types import interrupt
 
+from parking_agent_system.agents.admin_agent import AdminAgent
 from parking_agent_system.config import settings
 from parking_agent_system.data_layer.sql_manager import ParkingDatabase
 
@@ -28,6 +29,7 @@ class PipelineState(TypedDict):
 
 from parking_agent_system.agents.user_agent import ParkingChatAgent
 agent = ParkingChatAgent()
+admin_agent = AdminAgent()
 
 
 def user_node(state: PipelineState) -> dict:
@@ -59,17 +61,15 @@ def admin_wait_node(state: PipelineState) -> dict:
 def admin_approval_node(state: PipelineState) -> dict:
     reservation_id = state["reservation_id"]
     decision = state["decision"]
-    config = {"configurable": {"thread_id": reservation_id}}
 
-    if decision == "approved":
-        from parking_agent_system.tools.approve_reservation import build_approve_reservation_tool
-        tool = build_approve_reservation_tool()
-    else:
-        from parking_agent_system.tools.refuse_reservation import build_refuse_reservation_tool
-        tool = build_refuse_reservation_tool()
-    result = tool.invoke(input={} , config=config)
+    async def _run():
+        return await admin_agent.run(decision, UUID(reservation_id))
+
+    with concurrent.futures.ThreadPoolExecutor(max_workers=1) as pool:
+        response, _ = pool.submit(asyncio.run, _run()).result()
+
     return {
-        "messages" : [AIMessage(content=result)]
+        "messages": [AIMessage(content=response)]
     }
 
 def _call_mcp_write(reservation_id: str) -> str:
