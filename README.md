@@ -12,6 +12,12 @@ This project is built incrementally across stages. Errors and logic were refined
 
 ## Architecture
 
+The diagram below shows the system architecture for Stages 1–3 and the LangGraph workflow added in Stage 4.
+
+![Parking reservation system architecture and workflow](docs/diagrams/parking-reservation-system-architecture-and-workflow.png)
+
+[Open the full-size diagram](docs/diagrams/parking-reservation-system-architecture-and-workflow.png).
+
 ```
 User → Streamlit UI → FastAPI → LangGraph orchestration (SqliteSaver)
                                     ├── user_interaction node
