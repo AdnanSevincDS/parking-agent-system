@@ -167,6 +167,7 @@ def print_summary(df: pd.DataFrame) -> None:
 
 
 def save_csv(df: pd.DataFrame) -> None:
+    REPORTS_DIR.mkdir(parents=True, exist_ok=True)
     csv_df = df.copy()
     if "retrieved_contexts" in csv_df.columns:
         csv_df["retrieved_contexts"] = csv_df["retrieved_contexts"].apply(
@@ -186,7 +187,7 @@ def generate_evidently_report(df: pd.DataFrame) -> None:
     report = Report(metrics=[DataSummaryPreset(columns=METRIC_COLUMNS)])
     snapshot = report.run(report_df, None)
 
-    REPORTS_DIR.mkdir(exist_ok=True)
+    REPORTS_DIR.mkdir(parents=True, exist_ok=True)
     report_path = REPORTS_DIR / "evaluation_report.html"
     snapshot.save_html(str(report_path))
 
